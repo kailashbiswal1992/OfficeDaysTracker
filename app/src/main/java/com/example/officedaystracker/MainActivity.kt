@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
     private fun startGeofence(lat:Double,lon:Double,radius:Float) {
         val geofence=Geofence.Builder()
             .setRequestId("OFFICE")
-            .setCircularRegion(lat,lon,radius.toDouble())
+            .setCircularRegion(lat,lon,radius)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .build()

@@ -5,11 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -20,16 +23,21 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.button.MaterialButton
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     private lateinit var geofencingClient: GeofencingClient
     private val prefs by lazy { getSharedPreferences("office", MODE_PRIVATE) }
+    private val attendancePrefs by lazy { getSharedPreferences("attendance", MODE_PRIVATE) }
     private val officeLatKey = "officeLat"
     private val officeLonKey = "officeLon"
     private val radiusKey = "radius"
+    private val quarterTarget = 24 // target office days per quarter (as in mock)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +50,8 @@ class MainActivity : ComponentActivity() {
         val etLon = findViewById<TextInputEditText>(R.id.etLon)
         val etRadius = findViewById<TextInputEditText>(R.id.etRadius)
         val btnSet = findViewById<MaterialButton>(R.id.btnSet)
-        val btnViewCalendar = findViewById<View>(R.id.btnViewCalendar)
-        val btnProgress = findViewById<View>(R.id.btnProgress)
+        val cardCalendar = findViewById<MaterialCardView>(R.id.cardCalendar)
+        val cardProgress = findViewById<MaterialCardView>(R.id.cardProgress)
         val tvOfficeDays = findViewById<TextView>(R.id.tvOfficeDays)
         val tvRemaining = findViewById<TextView>(R.id.tvRemaining)
         val progressQuarter = findViewById<ProgressBar>(R.id.progressQuarter)
@@ -58,11 +66,10 @@ class MainActivity : ComponentActivity() {
         etRadius.setText(savedRadius.toInt().toString())
 
         // Quick actions
-        btnViewCalendar.setOnClickListener {
+        cardCalendar.setOnClickListener {
             startActivity(Intent(this, CalendarActivity::class.java))
         }
-        btnProgress.setOnClickListener {
-            // for now show calendar as progress placeholder
+        cardProgress.setOnClickListener {
             startActivity(Intent(this, CalendarActivity::class.java))
         }
 
@@ -97,31 +104,54 @@ class MainActivity : ComponentActivity() {
 
             Snackbar.make(view, "Starting geofence...", Snackbar.LENGTH_SHORT).show()
             requestPermissionsAndStart(la, lo, r)
+
+            // update progress after saving
+            updateQuarterProgressUI()
         }
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_home -> {
-                    // already on home
-                    true
-                }
+                R.id.navigation_home -> true
                 R.id.navigation_calendar -> {
-                    startActivity(Intent(this, CalendarActivity::class.java))
-                    true
+                    startActivity(Intent(this, CalendarActivity::class.java)); true
                 }
                 R.id.navigation_progress -> {
-                    // open calendar for now
-                    startActivity(Intent(this, CalendarActivity::class.java))
-                    true
+                    startActivity(Intent(this, CalendarActivity::class.java)); true
                 }
                 else -> false
             }
         }
 
-        // Update dummy progress values (real calculation uses attendance prefs)
-        tvOfficeDays.text = "8 / 24 Days"
-        tvRemaining.text = "16 Days remaining"
-        progressQuarter.progress = 33
+        // initial UI update
+        updateQuarterProgressUI()
+    }
+
+    private fun updateQuarterProgressUI() {
+        val now = Calendar.getInstance()
+        val year = now.get(Calendar.YEAR)
+        val month = now.get(Calendar.MONTH)
+        val quarterStart = (month / 3) * 3
+
+        var officeDays = 0
+
+        for (m in quarterStart until quarterStart + 3) {
+            val calendar = Calendar.getInstance()
+            calendar.set(year, m, 1)
+            val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            for (day in 1..maxDay) {
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                val key = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.time)
+                if (attendancePrefs.getBoolean(key, false)) officeDays++
+            }
+        }
+
+        val remaining = (quarterTarget - officeDays).coerceAtLeast(0)
+        val progressPercent = if (quarterTarget > 0) (officeDays * 100) / quarterTarget else 0
+
+        // update UI
+        findViewById<TextView>(R.id.tvOfficeDays).text = "$officeDays / $quarterTarget Days"
+        findViewById<TextView>(R.id.tvRemaining).text = "$remaining Days remaining"
+        findViewById<ProgressBar>(R.id.progressQuarter).progress = progressPercent
     }
 
     private fun requestPermissionsAndStart(lat: Double, lon: Double, radius: Float) {
@@ -172,6 +202,7 @@ class MainActivity : ComponentActivity() {
 
         geofencingClient.addGeofences(request, pi).addOnSuccessListener {
             Snackbar.make(findViewById(android.R.id.content), "Automatic office detection enabled.", Snackbar.LENGTH_LONG).show()
+            updateQuarterProgressUI()
         }.addOnFailureListener { ex ->
             Snackbar.make(findViewById(android.R.id.content), "Could not enable geofencing: ${ex.message}", Snackbar.LENGTH_LONG).show()
         }

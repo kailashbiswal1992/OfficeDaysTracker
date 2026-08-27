@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.GridLayout
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
@@ -114,38 +115,58 @@ class CalendarActivity : ComponentActivity() {
     }
 
     private fun addDayCell(day: Int, attended: Boolean, isToday: Boolean) {
-        val cell = TextView(this).apply {
-            text = if (attended) "✓\n$day" else day.toString()
-            textSize = if (attended) 14f else 16f
+        // Build a vertical cell: day number + small dot
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setPadding(4, 4, 4, 4)
             val lp = GridLayout.LayoutParams().apply {
                 width = 0
-                height = dpToPx(56)
+                height = dpToPx(64)
                 columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                 setMargins(4, 4, 4, 4)
             }
-
             layoutParams = lp
+        }
 
-            if (attended) {
-                setTextColor(ContextCompat.getColor(this@CalendarActivity, android.R.color.white))
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    cornerRadius = dpToPx(6).toFloat()
-                    setColor(ContextCompat.getColor(this@CalendarActivity, R.color.tile_attended))
-                }
-            } else if (isToday) {
-                setTextColor(ContextCompat.getColor(this@CalendarActivity, android.R.color.black))
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    cornerRadius = dpToPx(6).toFloat()
-                    setColor(ContextCompat.getColor(this@CalendarActivity, R.color.tile_today))
-                }
+        val tvDay = TextView(this).apply {
+            text = day.toString()
+            textSize = 16f
+            gravity = Gravity.CENTER
+        }
+
+        val dot = View(this).apply {
+            val size = dpToPx(6)
+            layoutParams = LinearLayout.LayoutParams(size, size).apply {
+                topMargin = dpToPx(6)
+            }
+            // visibility set below
+        }
+
+        // background/selection
+        if (isToday) {
+            // blue ring
+            container.background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setStroke(dpToPx(2), ContextCompat.getColor(this@CalendarActivity, R.color.primary))
+                setColor(ContextCompat.getColor(this@CalendarActivity, android.R.color.transparent))
             }
         }
 
-        calendarGrid.addView(cell)
+        if (attended) {
+            dot.visibility = View.VISIBLE
+            dot.background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(ContextCompat.getColor(this@CalendarActivity, R.color.tile_attended))
+            }
+            tvDay.setTextColor(ContextCompat.getColor(this@CalendarActivity, android.R.color.black))
+        } else {
+            dot.visibility = View.INVISIBLE
+            tvDay.setTextColor(ContextCompat.getColor(this@CalendarActivity, android.R.color.darker_gray))
+        }
+
+        container.addView(tvDay)
+        container.addView(dot)
+        calendarGrid.addView(container)
     }
 
     private fun updateQuarterProgress() {

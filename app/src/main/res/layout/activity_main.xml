@@ -29,6 +29,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@drawable/ic_location_pin"
+                    android:tint="@color/onPrimary"
                     android:contentDescription="App icon"
                     android:layout_gravity="center_vertical"
                     android:background="@android:color/transparent" />
@@ -57,7 +58,7 @@
                         android:text="Stay consistent. Hit your target."
                         android:textColor="@color/onPrimary"
                         android:textSize="14sp"
-                        android:alpha="0.9" />
+                        android:alpha="0.95" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -70,11 +71,13 @@
             android:padding="16dp">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardOfficeLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -163,12 +166,14 @@
                 android:layout_marginBottom="12dp">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCalendar"
                     android:layout_width="0dp"
                     android:layout_height="96dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp"
-                    android:layout_marginEnd="8dp">
+                    android:layout_marginEnd="8dp"
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -178,13 +183,15 @@
                         android:padding="8dp">
 
                         <ImageView
+                            android:id="@+id/ivCalendarIcon"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_calendar"
+                            android:tint="@color/primary"
                             android:contentDescription="Calendar" />
 
                         <TextView
-                            android:id="@+id/btnViewCalendar"
+                            android:id="@+id/tvCardCalendar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="View Calendar"
@@ -195,12 +202,14 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardProgress"
                     android:layout_width="0dp"
                     android:layout_height="96dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp"
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -210,13 +219,15 @@
                         android:padding="8dp">
 
                         <ImageView
+                            android:id="@+id/ivProgressIcon"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_progress"
+                            android:tint="@color/primary"
                             android:contentDescription="Progress" />
 
                         <TextView
-                            android:id="@+id/btnProgress"
+                            android:id="@+id/tvCardProgress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Progress"
@@ -261,7 +272,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="8 / 24 Days"
+                            android:text="0 / 24 Days"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -269,7 +280,7 @@
                             android:id="@+id/tvRemaining"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16 Days remaining"
+                            android:text="24 Days remaining"
                             android:textSize="14sp"
                             android:alpha="0.9" />
 
@@ -280,7 +291,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:progress="33"
+                        android:progress="0"
                         android:layout_marginTop="8dp"
                         android:indeterminate="false" />
 

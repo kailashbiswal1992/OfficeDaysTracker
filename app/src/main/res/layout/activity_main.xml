@@ -290,9 +290,7 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             app:indicatorSize="48dp"
-                            app:trackThickness="6dp"
-                            app:indicatorDirection="clockwise"
-                            app:indicatorInset="4dp" />
+                            app:trackThickness="6dp" />
 
                     </LinearLayout>
 

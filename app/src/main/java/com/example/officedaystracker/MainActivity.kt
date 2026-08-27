@@ -54,8 +54,10 @@ val radius=EditText(this).apply {
         setContentView(layout)
 
         manual.setOnClickListener {
-            Toast.makeText(this,"Calendar module is ready to be added; geofence settings are saved on this phone.",Toast.LENGTH_LONG).show()
-        }
+    startActivity(
+        Intent(this, CalendarActivity::class.java)
+    )
+}
 
         set.setOnClickListener {
             val la=lat.text.toString().toDoubleOrNull()

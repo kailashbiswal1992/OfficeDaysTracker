@@ -98,7 +98,7 @@ class CalendarActivity : ComponentActivity() {
             val isToday = date.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                     date.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
 
-            addDayCell(day, attended, isToday)
+            addDayCell(day, dateKey, attended, isToday)
         }
     }
 
@@ -114,7 +114,7 @@ class CalendarActivity : ComponentActivity() {
         )
     }
 
-    private fun addDayCell(day: Int, attended: Boolean, isToday: Boolean) {
+    private fun addDayCell(day: Int, dateKey: String, attended: Boolean, isToday: Boolean) {
         // Build a vertical cell: day number + small dot
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -126,6 +126,8 @@ class CalendarActivity : ComponentActivity() {
                 setMargins(4, 4, 4, 4)
             }
             layoutParams = lp
+            isClickable = true
+            isFocusable = true
         }
 
         val tvDay = TextView(this).apply {
@@ -139,12 +141,10 @@ class CalendarActivity : ComponentActivity() {
             layoutParams = LinearLayout.LayoutParams(size, size).apply {
                 topMargin = dpToPx(6)
             }
-            // visibility set below
         }
 
         // background/selection
         if (isToday) {
-            // blue ring
             container.background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setStroke(dpToPx(2), ContextCompat.getColor(this@CalendarActivity, R.color.primary))
@@ -166,6 +166,15 @@ class CalendarActivity : ComponentActivity() {
 
         container.addView(tvDay)
         container.addView(dot)
+
+        // toggle attendance on tap
+        container.setOnClickListener {
+            val currently = attendancePrefs.getBoolean(dateKey, false)
+            attendancePrefs.edit().putBoolean(dateKey, !currently).apply()
+            // refresh the current month view to reflect the change
+            refreshCalendar()
+        }
+
         calendarGrid.addView(container)
     }
 

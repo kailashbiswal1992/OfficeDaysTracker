@@ -282,11 +282,21 @@
                             android:layout_height="wrap_content"
                             android:text="24 Days remaining"
                             android:textSize="14sp"
-                            android:alpha="0.9" />
+                            android:alpha="0.9"
+                            android:layout_marginEnd="12dp" />
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/circularProgress"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            app:indicatorSize="48dp"
+                            app:trackThickness="6dp"
+                            app:indicatorDirection="clockwise"
+                            app:indicatorInset="4dp" />
 
                     </LinearLayout>
 
-                    <ProgressBar
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/progressQuarter"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"

@@ -32,9 +32,20 @@ class MainActivity : ComponentActivity() {
             text="Set your office location and radius. The app can automatically record a day when you enter the office area."
             textSize=16f
         }
-        val lat=EditText(this).apply { hint="Office latitude" }
-        val lon=EditText(this).apply { hint="Office longitude" }
-        val radius=EditText(this).apply { hint="Radius in metres (e.g. 250)"; setText("250") }
+        val lat=EditText(this).apply {
+    hint="Office latitude"
+    setText("13.0426")
+}
+
+val lon=EditText(this).apply {
+    hint="Office longitude"
+    setText("77.6200")
+}
+
+val radius=EditText(this).apply {
+    hint="Radius in metres (e.g. 250)"
+    setText("250")
+}
         val set=Button(this).apply { text="Enable automatic office detection" }
         val manual=Button(this).apply { text="Open attendance calendar" }
         val status=TextView(this).apply { textSize=15f }

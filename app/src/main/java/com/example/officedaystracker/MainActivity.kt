@@ -7,7 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,10 +19,10 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.button.MaterialButton
-import android.widget.TextView
 
 class MainActivity : ComponentActivity() {
     private lateinit var geofencingClient: GeofencingClient
@@ -33,14 +37,19 @@ class MainActivity : ComponentActivity() {
 
         geofencingClient = LocationServices.getGeofencingClient(this)
 
+        val ivAppIcon = findViewById<ImageView>(R.id.ivAppIcon)
         val etLat = findViewById<TextInputEditText>(R.id.etLat)
         val etLon = findViewById<TextInputEditText>(R.id.etLon)
         val etRadius = findViewById<TextInputEditText>(R.id.etRadius)
         val btnSet = findViewById<MaterialButton>(R.id.btnSet)
-        val btnManual = findViewById<MaterialButton>(R.id.btnManual)
-        val tvStatus = findViewById<TextView>(R.id.tvStatus)
+        val btnViewCalendar = findViewById<View>(R.id.btnViewCalendar)
+        val btnProgress = findViewById<View>(R.id.btnProgress)
+        val tvOfficeDays = findViewById<TextView>(R.id.tvOfficeDays)
+        val tvRemaining = findViewById<TextView>(R.id.tvRemaining)
+        val progressQuarter = findViewById<ProgressBar>(R.id.progressQuarter)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
-        // Restore saved values if present
+        // Restore saved values
         val savedLat = prefs.getFloat(officeLatKey, Float.NaN)
         val savedLon = prefs.getFloat(officeLonKey, Float.NaN)
         val savedRadius = prefs.getFloat(radiusKey, 250f)
@@ -48,16 +57,19 @@ class MainActivity : ComponentActivity() {
         if (!savedLon.isNaN()) etLon.setText(savedLon.toString())
         etRadius.setText(savedRadius.toInt().toString())
 
-        btnManual.setOnClickListener {
+        // Quick actions
+        btnViewCalendar.setOnClickListener {
+            startActivity(Intent(this, CalendarActivity::class.java))
+        }
+        btnProgress.setOnClickListener {
+            // for now show calendar as progress placeholder
             startActivity(Intent(this, CalendarActivity::class.java))
         }
 
         btnSet.setOnClickListener { view ->
-            // hide keyboard
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             currentFocus?.let { imm.hideSoftInputFromWindow(it.windowToken, 0) }
 
-            // validate
             val la = etLat.text?.toString()?.trim()?.toDoubleOrNull()
             val lo = etLon.text?.toString()?.trim()?.toDoubleOrNull()
             val r = etRadius.text?.toString()?.trim()?.toFloatOrNull() ?: 250f
@@ -66,31 +78,50 @@ class MainActivity : ComponentActivity() {
             if (la == null) {
                 etLat.error = "Enter a valid latitude"
                 ok = false
-            } else {
-                etLat.error = null
-            }
+            } else etLat.error = null
             if (lo == null) {
                 etLon.error = "Enter a valid longitude"
                 ok = false
-            } else {
-                etLon.error = null
-            }
+            } else etLon.error = null
+
             if (!ok) {
                 Snackbar.make(view, "Please fix the errors above", Snackbar.LENGTH_SHORT).show()
-                tvStatus.text = "Invalid input"
                 return@setOnClickListener
             }
 
-            // Save preferences
             prefs.edit()
                 .putFloat(officeLatKey, la!!.toFloat())
                 .putFloat(officeLonKey, lo!!.toFloat())
                 .putFloat(radiusKey, r)
                 .apply()
 
-            tvStatus.text = "Starting geofence..."
+            Snackbar.make(view, "Starting geofence...", Snackbar.LENGTH_SHORT).show()
             requestPermissionsAndStart(la, lo, r)
         }
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    // already on home
+                    true
+                }
+                R.id.navigation_calendar -> {
+                    startActivity(Intent(this, CalendarActivity::class.java))
+                    true
+                }
+                R.id.navigation_progress -> {
+                    // open calendar for now
+                    startActivity(Intent(this, CalendarActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Update dummy progress values (real calculation uses attendance prefs)
+        tvOfficeDays.text = "8 / 24 Days"
+        tvRemaining.text = "16 Days remaining"
+        progressQuarter.progress = 33
     }
 
     private fun requestPermissionsAndStart(lat: Double, lon: Double, radius: Float) {
@@ -100,9 +131,7 @@ class MainActivity : ComponentActivity() {
             permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
-        // For newer Android versions require POST_NOTIFICATIONS runtime permission
-        if (Build.VERSION.SDK_INT >= 33 &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Manifest.permission.POST_NOTIFICATIONS)
         }
 
@@ -111,10 +140,7 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        // Background location flows: ask if needed (Android 10+)
-        if (Build.VERSION.SDK_INT >= 29 &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request background location explicitly (separate request)
+        if (Build.VERSION.SDK_INT >= 29 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), 11)
             return
         }
@@ -140,19 +166,14 @@ class MainActivity : ComponentActivity() {
         val pi = PendingIntent.getBroadcast(this, 1, intent, flags)
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Permission missing; should not happen because we request earlier
-            runOnUiThread {
-                Snackbar.make(findViewById(android.R.id.content), "Location permission is required", Snackbar.LENGTH_LONG).show()
-            }
+            Snackbar.make(findViewById(android.R.id.content), "Location permission is required", Snackbar.LENGTH_LONG).show()
             return
         }
 
         geofencingClient.addGeofences(request, pi).addOnSuccessListener {
             Snackbar.make(findViewById(android.R.id.content), "Automatic office detection enabled.", Snackbar.LENGTH_LONG).show()
-            findViewById<TextView>(R.id.tvStatus).text = "Automatic detection enabled"
         }.addOnFailureListener { ex ->
             Snackbar.make(findViewById(android.R.id.content), "Could not enable geofencing: ${ex.message}", Snackbar.LENGTH_LONG).show()
-            findViewById<TextView>(R.id.tvStatus).text = "Could not enable geofencing"
         }
     }
 }

@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Office Days Tracker</string>
+    <string name="app_name">Office Days Tracker</string>
+    <string name="enable_detection">Enable Automatic Detection</string>
+    <string name="view_calendar">View Calendar</string>
+    <string name="progress">Progress</string>
 </resources>

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -18,6 +19,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
@@ -57,6 +59,18 @@ class MainActivity : ComponentActivity() {
         val progressQuarter = findViewById<ProgressBar>(R.id.progressQuarter)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
+        // Attempt to set a bundled hero drawable if present (resource name: hero)
+        val heroId = resources.getIdentifier("hero", "drawable", packageName)
+        if (heroId != 0) ivAppIcon.setImageResource(heroId)
+
+        // Attempt to apply a bundled font (resource name: poppins_regular in /res/font)
+        val fontId = resources.getIdentifier("poppins_regular", "font", packageName)
+        if (fontId != 0) {
+            val tf = ResourcesCompat.getFont(this, fontId)
+            findViewById<TextView>(R.id.tvHeaderTitle).typeface = tf
+            findViewById<TextView>(R.id.tvHeaderSubtitle).typeface = tf
+        }
+
         // Restore saved values
         val savedLat = prefs.getFloat(officeLatKey, Float.NaN)
         val savedLon = prefs.getFloat(officeLonKey, Float.NaN)
@@ -65,11 +79,19 @@ class MainActivity : ComponentActivity() {
         if (!savedLon.isNaN()) etLon.setText(savedLon.toString())
         etRadius.setText(savedRadius.toInt().toString())
 
-        // Quick actions
+        // Quick actions - add small press animation
+        val touchAnim: (View) -> Unit = { v ->
+            v.animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).withEndAction {
+                v.animate().scaleX(1f).scaleY(1f).setDuration(80).start()
+            }.start()
+        }
+
         cardCalendar.setOnClickListener {
+            touchAnim(it)
             startActivity(Intent(this, CalendarActivity::class.java))
         }
         cardProgress.setOnClickListener {
+            touchAnim(it)
             startActivity(Intent(this, CalendarActivity::class.java))
         }
 
@@ -119,6 +141,32 @@ class MainActivity : ComponentActivity() {
                     startActivity(Intent(this, CalendarActivity::class.java)); true
                 }
                 else -> false
+            }
+        }
+
+        // Add a debug-only "Mark Today" button programmatically (appears only in debug builds)
+        if (BuildConfig.DEBUG) {
+            try {
+                val cardOffice = findViewById<MaterialCardView>(R.id.cardOfficeLocation)
+                val container = (cardOffice.getChildAt(0) as? ViewGroup)
+                container?.let { parent ->
+                    val markBtn = MaterialButton(this).apply {
+                        text = "Mark Today (dev)"
+                        isAllCaps = false
+                        setOnClickListener { v ->
+                            val todayKey = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                            attendancePrefs.edit().putBoolean(todayKey, true).apply()
+                            updateQuarterProgressUI()
+                            Snackbar.make(v, "Marked $todayKey as office day", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                    // small top margin
+                    val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    lp.topMargin = (8 * resources.displayMetrics.density).toInt()
+                    parent.addView(markBtn, lp)
+                }
+            } catch (e: Exception) {
+                // Ignore if layout isn't as expected
             }
         }
 

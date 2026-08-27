@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1E88E5</color>
+    <color name="primaryDark">#1565C0</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="secondary">#26A69A</color>
+    <color name="onSecondary">#000000</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="tile_attended">#2E7D32</color>
+    <color name="tile_today">#EEEEEE</color>
+</resources>

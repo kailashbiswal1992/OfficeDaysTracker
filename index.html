@@ -51,16 +51,75 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 .actions button:nth-child(1):hover{background:#059669;transform:translateY(-2px);box-shadow:0 6px 16px rgba(16,185,129,0.4)}
 .actions button:nth-child(2){background:#0066cc;color:white;box-shadow:0 4px 12px rgba(0,102,204,0.3)}
 .actions button:nth-child(2):hover{background:#0052a3;transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,102,204,0.4)}
+
+@media(max-width:768px){
+  .app{padding:16px}
+  .header{padding:16px;gap:12px}
+  .logo{width:44px;height:44px;font-size:20px}
+  .title-group h1{font-size:24px}
+  .summary{gap:12px;margin:16px 0}
+  .card{padding:14px}
+  .value{font-size:28px}
+  .label{font-size:11px}
+  .calendar{padding:16px}
+  .day{min-height:70px;padding:6px;font-size:13px}
+  .day .num{font-size:15px}
+  .grid{gap:5px}
+  .monthhead strong{font-size:18px}
+  .controls button,.controls select{padding:8px 12px;font-size:13px}
+  .note{font-size:12px;padding:10px;margin-top:12px}
+  .actions{gap:8px}
+  .actions button{padding:9px 14px;font-size:12px}
+}
+
 @media(max-width:600px){
-  .header{flex-direction:column;text-align:center;gap:12px}
-  .logo-section{flex-direction:column}
-  .summary{grid-template-columns:1fr}
-  .day{min-height:64px;padding:6px;font-size:13px}
-  .day .num{font-size:14px}
-  .day .tag{font-size:9px}
   .app{padding:12px}
-  .controls{flex-direction:column;width:100%;justify-content:center}
-  .controls button,.controls select{width:100%}
+  .header{flex-direction:column;text-align:center;gap:10px;padding:14px}
+  .logo-section{flex-direction:column;gap:10px}
+  .logo{width:40px;height:40px;font-size:18px}
+  .title-group h1{font-size:20px}
+  .title-group p{font-size:12px}
+  .summary{grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+  .card{padding:12px;border-radius:10px}
+  .value{font-size:24px}
+  .label{font-size:10px;margin-bottom:6px}
+  .controls{flex-direction:row;width:100%;justify-content:center;gap:6px;flex-wrap:wrap}
+  .controls button,.controls select{flex:1;min-width:70px;padding:8px 10px;font-size:12px}
+  .calendar{padding:12px;border-radius:12px}
+  .grid{gap:4px}
+  .day{min-height:60px;padding:5px;font-size:12px;border-radius:8px;border-width:1px}
+  .day .num{font-size:13px}
+  .day .tag{font-size:8px;padding:1px 4px}
+  .dow{padding:8px 0;font-size:11px}
+  .monthhead{margin-bottom:12px;gap:8px}
+  .monthhead button{padding:8px 10px;font-size:16px}
+  .monthhead strong{font-size:16px}
+  .note{font-size:11px;padding:8px;margin-top:10px;border-radius:4px}
+  .actions{gap:6px;margin-top:12px}
+  .actions button{padding:8px 10px;font-size:11px;flex:1}
+}
+
+@media(max-width:400px){
+  .app{padding:8px}
+  .header{padding:10px;gap:8px}
+  .logo{width:36px;height:36px;font-size:16px}
+  .title-group h1{font-size:18px}
+  .title-group p{font-size:11px}
+  .summary{grid-template-columns:1fr;gap:8px;margin:8px 0}
+  .card{padding:10px;border-radius:8px}
+  .value{font-size:22px}
+  .label{font-size:9px}
+  .controls{gap:4px}
+  .controls button,.controls select{padding:6px 8px;font-size:11px;min-width:60px}
+  .calendar{padding:10px;border-radius:10px}
+  .grid{gap:3px}
+  .day{min-height:55px;padding:4px;font-size:11px}
+  .day .num{font-size:12px}
+  .monthhead button{padding:6px 8px;font-size:14px}
+  .monthhead strong{font-size:14px}
+  .note{font-size:10px;padding:6px;border-radius:4px;margin-top:8px}
+  .actions{gap:4px;margin-top:8px}
+  .actions button{padding:7px 6px;font-size:10px}
 }
 </style>
 </head>

@@ -20,11 +20,15 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 .controls button:hover,.controls select:hover{background:#f8fafc;border-color:#cbd5e1}
 .controls select{padding:10px 12px}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
-.card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #0066cc;transition:transform 0.2s,box-shadow 0.2s}
+.card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #0066cc;transition:transform 0.2s,box-shadow 0.2s;position:relative}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
 .card:nth-child(2){border-left-color:#10b981}
 .card:nth-child(3){border-left-color:#f59e0b}
 .card:nth-child(4){border-left-color:#8b5cf6}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card.editable .card-header{cursor:pointer}
+.edit-btn{background:none;border:none;color:#0066cc;cursor:pointer;font-size:18px;padding:0;opacity:0;transition:opacity 0.2s;display:inline-flex;align-items:center;justify-content:center}
+.card.editable:hover .edit-btn{opacity:1}
 .label{font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
 .value{font-size:32px;font-weight:700;color:#0f172a}
 .value.highlight{color:#0066cc}
@@ -59,6 +63,8 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 .modal-content{background:white;border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:400px;width:90%;text-align:center}
 .modal-content h2{margin:0 0 12px 0;font-size:20px;color:#0f172a}
 .modal-content p{margin:0 0 24px 0;font-size:14px;color:#64748b;line-height:1.6}
+.modal-content input{width:100%;padding:10px 12px;font-size:14px;border:2px solid #e2e8f0;border-radius:8px;margin:0 0 24px 0;text-align:center}
+.modal-content input:focus{outline:none;border-color:#0066cc}
 .modal-buttons{display:flex;gap:12px;justify-content:center}
 .modal-buttons button{border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}
 .modal-buttons .confirm{background:#10b981;color:white;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
@@ -76,6 +82,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .card{padding:14px}
   .value{font-size:28px}
   .label{font-size:11px}
+  .edit-btn{font-size:16px;opacity:1}
   .calendar{padding:16px}
   .day{min-height:70px;padding:6px;font-size:13px}
   .day .num{font-size:15px}
@@ -98,6 +105,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .card{padding:12px;border-radius:10px}
   .value{font-size:24px}
   .label{font-size:10px;margin-bottom:6px}
+  .edit-btn{font-size:14px;opacity:1}
   .controls{flex-direction:row;width:100%;justify-content:center;gap:6px;flex-wrap:wrap}
   .controls button,.controls select{flex:1;min-width:70px;padding:8px 10px;font-size:12px}
   .calendar{padding:12px;border-radius:12px}
@@ -129,6 +137,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .card{padding:10px;border-radius:8px}
   .value{font-size:22px}
   .label{font-size:9px}
+  .edit-btn{font-size:12px}
   .controls{gap:4px}
   .controls button,.controls select{padding:6px 8px;font-size:11px;min-width:60px}
   .calendar{padding:10px;border-radius:10px}
@@ -167,9 +176,14 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
       <div class="label">Selected this quarter</div>
       <div class="value highlight" id="qdays">0</div>
     </div>
-    <div class="card">
-      <div class="label">Quarter target</div>
-      <div class="value">24</div>
+    <div class="card editable" id="targetCard">
+      <div class="card-header">
+        <div>
+          <div class="label">Quarter target</div>
+          <div class="value" id="quarterTarget">24</div>
+        </div>
+        <button class="edit-btn" title="Edit target">✎</button>
+      </div>
     </div>
     <div class="card">
       <div class="label">Remaining</div>
@@ -201,6 +215,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   <div class="modal-content">
     <h2 id="modalTitle">Confirm Action</h2>
     <p id="modalMessage">Are you sure?</p>
+    <input type="number" id="modalInput" style="display:none" min="1" max="365">
     <div class="modal-buttons">
       <button class="cancel" onclick="closeModal()">Cancel</button>
       <button class="confirm" onclick="confirmAction()">Confirm</button>
@@ -211,21 +226,35 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 <input type="file" id="fileInput" accept=".json">
 
 <script>
-const KEY="officeDaysTracker_v1";
-let data=JSON.parse(localStorage.getItem(KEY)||"{}");
+const KEY_DATA="officeDaysTracker_v1";
+const KEY_TARGET="officeDaysTrackerTarget";
+let data=JSON.parse(localStorage.getItem(KEY_DATA)||"{}");
+let quarterTarget=parseInt(localStorage.getItem(KEY_TARGET)||"24");
 let view=new Date(); view.setDate(1);
 const $=id=>document.getElementById(id);
 let pendingAction=null;
+let editingTarget=false;
 
-function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+function save(){localStorage.setItem(KEY_DATA,JSON.stringify(data));}
+function saveTarget(){localStorage.setItem(KEY_TARGET,quarterTarget.toString());}
 function key(d){return d.toISOString().slice(0,10)}
 function quarter(m){return Math.floor(m/3)+1}
 function quarterRange(y,q){return [new Date(y,(q-1)*3,1),new Date(y,q*3,0)]}
 function daysInQuarter(y,q){let [a,b]=quarterRange(y,q), n=0;for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)) if(data[key(d)])n++;return n}
 
-function showModal(title,message,action){
+function showModal(title,message,action,isTargetEdit=false){
   $("modalTitle").textContent=title;
   $("modalMessage").textContent=message;
+  const input=$("modalInput");
+  if(isTargetEdit){
+    input.style.display="block";
+    input.value=quarterTarget.toString();
+    input.focus();
+    setTimeout(()=>input.select(),0);
+  }else{
+    input.style.display="none";
+  }
+  editingTarget=isTargetEdit;
   pendingAction=action;
   $("confirmModal").classList.add("active");
 }
@@ -233,11 +262,24 @@ function showModal(title,message,action){
 function closeModal(){
   $("confirmModal").classList.remove("active");
   pendingAction=null;
+  editingTarget=false;
 }
 
 function confirmAction(){
-  if(pendingAction)pendingAction();
-  closeModal();
+  if(editingTarget){
+    const newTarget=parseInt($("modalInput").value);
+    if(isNaN(newTarget)||newTarget<1||newTarget>365){
+      alert("Please enter a valid number between 1 and 365");
+      return;
+    }
+    quarterTarget=newTarget;
+    saveTarget();
+    render();
+    closeModal();
+  }else if(pendingAction){
+    pendingAction();
+    closeModal();
+  }
 }
 
 function render(){
@@ -266,7 +308,9 @@ function render(){
     cal.appendChild(e);
   }
   const qcount=daysInQuarter(y,q);
-  $("qdays").textContent=qcount;$("remaining").textContent=Math.max(0,24-qcount);
+  $("qdays").textContent=qcount;
+  $("quarterTarget").textContent=quarterTarget;
+  $("remaining").textContent=Math.max(0,quarterTarget-qcount);
   let total=0;Object.keys(data).forEach(k=>{if(k.startsWith(y+"-"))total++});$("ydays").textContent=total;
 }
 
@@ -277,6 +321,10 @@ $("next").onclick=()=>{view.setFullYear(view.getFullYear()+1);render()};
 $("prevMonth").onclick=()=>{view.setMonth(view.getMonth()-1);render()};
 $("nextMonth").onclick=()=>{view.setMonth(view.getMonth()+1);render()};
 
+$("targetCard").onclick=()=>{
+  showModal("Edit Quarter Target","Enter the number of office days target for this quarter:",()=>{},true);
+};
+
 $("clearQuarter").onclick=()=>{
   showModal("Clear Quarter","Are you sure you want to clear all selected office days in this quarter?",()=>{
     const y=view.getFullYear(),q=quarter(view.getMonth()),[a,b]=quarterRange(y,q);
@@ -286,7 +334,8 @@ $("clearQuarter").onclick=()=>{
 };
 
 $("export").onclick=()=>{
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const exportData={data,quarterTarget};
+  const blob=new Blob([JSON.stringify(exportData,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="office-days.json";a.click();URL.revokeObjectURL(a.href);
 };
 
@@ -303,9 +352,13 @@ $("fileInput").onchange=(e)=>{
         alert("Invalid file format. Please use the exported JSON file.");
         return;
       }
+      const importData=imported.data||imported;
+      const importTarget=imported.quarterTarget||24;
       showModal("Import Data","This will replace all your current data. Do you want to continue?",()=>{
-        data=imported;
+        data=importData;
+        quarterTarget=importTarget;
         save();
+        saveTarget();
         render();
         alert("Data imported successfully!");
       });
@@ -319,6 +372,7 @@ $("fileInput").onchange=(e)=>{
 
 document.addEventListener("keydown",(e)=>{
   if(e.key==="Escape")closeModal();
+  if(e.key==="Enter"&&editingTarget)confirmAction();
 });
 
 $("confirmModal").addEventListener("click",(e)=>{

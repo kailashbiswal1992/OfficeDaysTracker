@@ -449,7 +449,7 @@ function renderCalendar(){
       const dateStr=d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
       const isMarked=!!data[k];
       const action=isMarked?"Mark as non-office day":"Mark as office day";
-      showModal("Confirm Date Selection",`${action}?\n${dateStr}`,()=>{
+      showModal("Confirm Date Selection",`${action}?`,()=>{
         data[k]=!data[k];
         if(!data[k])delete data[k];
         save();

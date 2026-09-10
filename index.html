@@ -6,22 +6,33 @@
 <title>Office Days Tracker - Voya</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#172033;min-height:100vh}
+body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#172033;min-height:100vh;transition:background 0.3s}
+body.dark-mode{background:linear-gradient(135deg,#0a0e27 0%,#1a1f35 100%)}
 .app{max-width:950px;margin:auto;padding:20px}
-.header{background:white;border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center}
+.header{background:white;border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;transition:all 0.3s}
+body.dark-mode .header{background:#1a2332;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+body.dark-mode .header {color:#e0e7ff}
 .logo-section{display:flex;align-items:center;gap:16px}
 .logo-link{display:flex;align-items:center;gap:16px;text-decoration:none;cursor:pointer}
 .logo{width:50px;height:50px;background:linear-gradient(135deg,#0066cc 0%,#0052a3 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:24px}
-.title-group h1{font-size:28px;margin:0;font-weight:700;color:#0f172a}
-.title-group p{font-size:13px;color:#64748b;margin:4px 0 0 0}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.title-group h1{font-size:28px;margin:0;font-weight:700;color:#0f172a;transition:color 0.3s}
+body.dark-mode .title-group h1{color:#e0e7ff}
+.title-group p{font-size:13px;color:#64748b;margin:4px 0 0 0;transition:color 0.3s}
+body.dark-mode .title-group p{color:#94a3b8}
 .controls{display:flex;gap:8px;align-items:center}
 .controls button,.controls select{padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;background:white;font-size:15px;cursor:pointer;font-weight:500;color:#0f172a;transition:all 0.2s}
 .controls button:hover,.controls select:hover{background:#f8fafc;border-color:#cbd5e1}
+body.dark-mode .controls button,body.dark-mode .controls select{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+body.dark-mode .controls button:hover,body.dark-mode .controls select:hover{background:#4a5568;border-color:#718096}
 .controls select{padding:10px 12px}
+.theme-toggle{background:none;border:none;font-size:20px;cursor:pointer;padding:8px 12px;border-radius:8px;transition:all 0.2s}
+.theme-toggle:hover{background:rgba(0,102,204,0.1)}
+body.dark-mode .theme-toggle:hover{background:rgba(0,102,204,0.2)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
-.card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #0066cc;transition:transform 0.2s,box-shadow 0.2s;position:relative}
+.card{background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #0066cc;transition:all 0.3s;position:relative}
+body.dark-mode .card{background:#1a2332;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+body.dark-mode .card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.4)}
 .card:nth-child(2){border-left-color:#10b981}
 .card:nth-child(3){border-left-color:#f59e0b}
 .card:nth-child(4){border-left-color:#8b5cf6}
@@ -29,27 +40,62 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 .card.editable .card-header{cursor:pointer}
 .edit-btn{background:none;border:none;color:#0066cc;cursor:pointer;font-size:18px;padding:0;opacity:0;transition:opacity 0.2s;display:inline-flex;align-items:center;justify-content:center}
 .card.editable:hover .edit-btn{opacity:1}
-.label{font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
-.value{font-size:32px;font-weight:700;color:#0f172a}
+.label{font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;transition:color 0.3s}
+body.dark-mode .label{color:#94a3b8}
+.value{font-size:32px;font-weight:700;color:#0f172a;transition:color 0.3s}
+body.dark-mode .value{color:#e0e7ff}
 .value.highlight{color:#0066cc}
-.calendar{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
-.monthhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.progress-container{margin-top:12px}
+.progress-bar{background:#e2e8f0;border-radius:8px;height:8px;overflow:hidden;position:relative}
+body.dark-mode .progress-bar{background:#4a5568}
+.progress-fill{height:100%;background:linear-gradient(90deg,#0066cc 0%,#0052a3 100%);border-radius:8px;transition:width 0.3s;display:flex;align-items:center;justify-content:center}
+.progress-text{font-size:11px;color:#0066cc;font-weight:600;margin-top:6px;text-align:right;transition:color 0.3s}
+body.dark-mode .progress-text{color:#60a5fa}
+.monthly-stats{margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0}
+body.dark-mode .monthly-stats{border-top-color:#4a5568}
+.monthly-stats h4{margin:0 0 12px 0;font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;transition:color 0.3s}
+body.dark-mode .monthly-stats h4{color:#94a3b8}
+.monthly-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.month-item{background:#f8fafc;padding:8px;border-radius:8px;text-align:center;font-size:11px}
+body.dark-mode .month-item{background:#2d3748}
+.month-item .month-num{font-weight:700;color:#0066cc;font-size:14px;display:block}
+body.dark-mode .month-item .month-num{color:#60a5fa}
+.month-item .month-label{color:#64748b;font-size:9px;display:block;transition:color 0.3s}
+body.dark-mode .month-item .month-label{color:#94a3b8}
+.calendar{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:all 0.3s}
+body.dark-mode .calendar{background:#1a2332;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.monthhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}
 .monthhead button{border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;background:white;cursor:pointer;font-size:18px;color:#0066cc;font-weight:600;transition:all 0.2s}
+body.dark-mode .monthhead button{background:#2d3748;color:#60a5fa;border-color:#4a5568}
 .monthhead button:hover{background:#f0f6ff;border-color:#0066cc}
-.monthhead strong{font-size:20px;color:#0f172a;font-weight:700}
+body.dark-mode .monthhead button:hover{background:#4a5568;border-color:#60a5fa}
+.monthhead strong{font-size:20px;color:#0f172a;font-weight:700;transition:color 0.3s}
+body.dark-mode .monthhead strong{color:#e0e7ff}
+.view-toggle{display:flex;gap:8px;align-items:center}
+.view-toggle button{padding:8px 12px;font-size:12px;font-weight:600;border:1px solid #e2e8f0;background:white;border-radius:8px;cursor:pointer;transition:all 0.2s;color:#0f172a}
+body.dark-mode .view-toggle button{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+.view-toggle button.active{background:#0066cc;color:white;border-color:#0066cc}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.dow{text-align:center;font-size:12px;color:#64748b;padding:12px 0;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.dow{text-align:center;font-size:12px;color:#64748b;padding:12px 0;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;transition:color 0.3s}
+body.dark-mode .dow{color:#94a3b8}
 .day{min-height:76px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;padding:8px;cursor:pointer;position:relative;transition:all 0.2s;display:flex;flex-direction:column}
+body.dark-mode .day{background:#2d3748;border-color:#4a5568}
 .day:hover{border-color:#0066cc;box-shadow:0 4px 12px rgba(0,102,204,0.1)}
 .day.empty{border:0;background:transparent;cursor:default}
 .day.empty:hover{border:0}
 .day.office{background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border-color:#0066cc;box-shadow:0 2px 8px rgba(0,102,204,0.15)}
+body.dark-mode .day.office{background:linear-gradient(135deg,#1a3a4a 0%,#1a2f3a 100%)}
 .day.weekend{background:#f8f9fa;border-color:#e5e7eb;color:#9ca3af}
+body.dark-mode .day.weekend{background:#2d3748;border-color:#4a5568;color:#718096}
 .day.today{outline:2px solid #f59e0b;outline-offset:-2px;box-shadow:0 0 0 3px rgba(245,158,11,0.1)}
-.day .num{font-weight:700;font-size:16px;color:#0f172a}
+.day .num{font-weight:700;font-size:16px;color:#0f172a;transition:color 0.3s}
+body.dark-mode .day .num{color:#e0e7ff}
 .day.weekend .num{color:#9ca3af}
-.day .tag{font-size:10px;color:#0066cc;font-weight:700;background:#e0f2fe;padding:2px 6px;border-radius:4px;width:fit-content;margin-top:auto}
-.note{margin-top:16px;font-size:13px;color:#64748b;padding:12px;background:#f8fafc;border-left:3px solid #0066cc;border-radius:6px}
+body.dark-mode .day.weekend .num{color:#718096}
+.day .tag{font-size:10px;color:#0066cc;font-weight:700;background:#e0f2fe;padding:2px 6px;border-radius:4px;width:fit-content;margin-top:auto;transition:all 0.3s}
+body.dark-mode .day .tag{background:rgba(96,165,250,0.2)}
+.note{margin-top:16px;font-size:13px;color:#64748b;padding:12px;background:#f8fafc;border-left:3px solid #0066cc;border-radius:6px;transition:all 0.3s}
+body.dark-mode .note{background:#2d3748;color:#cbd5e1;border-left-color:#60a5fa}
 .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .actions button{border:none;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px}
 .actions button:nth-child(1){background:#10b981;color:white;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
@@ -60,29 +106,35 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 .actions button:nth-child(3):hover{background:#4f46e5;transform:translateY(-2px);box-shadow:0 6px 16px rgba(99,102,241,0.4)}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
 .modal.active{display:flex}
-.modal-content{background:white;border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:400px;width:90%;text-align:center}
-.modal-content h2{margin:0 0 12px 0;font-size:20px;color:#0f172a}
-.modal-content p{margin:0 0 24px 0;font-size:14px;color:#64748b;line-height:1.6}
-.modal-content input{width:100%;padding:10px 12px;font-size:14px;border:2px solid #e2e8f0;border-radius:8px;margin:0 0 24px 0;text-align:center}
+.modal-content{background:white;border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:400px;width:90%;text-align:center;transition:all 0.3s}
+body.dark-mode .modal-content{background:#1a2332}
+.modal-content h2{margin:0 0 12px 0;font-size:20px;color:#0f172a;transition:color 0.3s}
+body.dark-mode .modal-content h2{color:#e0e7ff}
+.modal-content p{margin:0 0 24px 0;font-size:14px;color:#64748b;line-height:1.6;transition:color 0.3s}
+body.dark-mode .modal-content p{color:#cbd5e1}
+.modal-content input{width:100%;padding:10px 12px;font-size:14px;border:2px solid #e2e8f0;border-radius:8px;margin:0 0 24px 0;text-align:center;background:white;color:#0f172a;transition:all 0.3s}
+body.dark-mode .modal-content input{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
 .modal-content input:focus{outline:none;border-color:#0066cc}
 .modal-buttons{display:flex;gap:12px;justify-content:center}
 .modal-buttons button{border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}
 .modal-buttons .confirm{background:#10b981;color:white;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
 .modal-buttons .confirm:hover{background:#059669;transform:translateY(-2px)}
 .modal-buttons .cancel{background:#e2e8f0;color:#0f172a;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+body.dark-mode .modal-buttons .cancel{background:#4a5568;color:#e0e7ff}
 .modal-buttons .cancel:hover{background:#cbd5e1;transform:translateY(-2px)}
+body.dark-mode .modal-buttons .cancel:hover{background:#718096}
 #fileInput{display:none}
-
 .whatsapp-widget{position:fixed;bottom:30px;right:30px;z-index:999;animation:bounce 2s infinite}
 .whatsapp-button{display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:#25D366;border-radius:50%;box-shadow:0 8px 24px rgba(37,211,102,0.4);cursor:pointer;transition:all 0.3s;text-decoration:none;font-size:32px;border:none}
 .whatsapp-button:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,0.6)}
 .whatsapp-tooltip{position:absolute;bottom:80px;right:0;background:white;padding:12px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);white-space:nowrap;font-size:13px;color:#0f172a;font-weight:500;opacity:0;transform:translateY(10px) translateX(10px);transition:all 0.3s;pointer-events:none;max-width:220px;text-align:center}
+body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 .whatsapp-widget:hover .whatsapp-tooltip{opacity:1;transform:translateY(0) translateX(10px)}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 @media(max-width:768px){
   .app{padding:16px}
-  .header{padding:16px;gap:12px}
+  .header{padding:16px;gap:12px;justify-content:space-between}
   .logo{width:44px;height:44px;font-size:20px}
   .title-group h1{font-size:24px}
   .summary{gap:12px;margin:16px 0}
@@ -95,12 +147,16 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .day .num{font-size:15px}
   .grid{gap:5px}
   .monthhead strong{font-size:18px}
+  .monthhead{gap:8px}
+  .controls{flex-wrap:wrap}
   .controls button,.controls select{padding:8px 12px;font-size:13px}
   .note{font-size:12px;padding:10px;margin-top:12px}
   .actions{gap:8px}
   .actions button{padding:9px 14px;font-size:12px}
   .whatsapp-button{width:56px;height:56px;font-size:28px}
   .whatsapp-widget{bottom:20px;right:20px}
+  .view-toggle{gap:4px}
+  .view-toggle button{padding:6px 10px;font-size:11px}
 }
 
 @media(max-width:600px){
@@ -110,13 +166,13 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .logo{width:40px;height:40px;font-size:18px}
   .title-group h1{font-size:20px}
   .title-group p{font-size:12px}
+  .controls{flex-direction:row;width:100%;justify-content:center;gap:6px;flex-wrap:wrap;order:3}
+  .controls button,.controls select{flex:1;min-width:50px;padding:8px 10px;font-size:12px}
   .summary{grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
   .card{padding:12px;border-radius:10px}
   .value{font-size:24px}
   .label{font-size:10px;margin-bottom:6px}
   .edit-btn{font-size:14px;opacity:1}
-  .controls{flex-direction:row;width:100%;justify-content:center;gap:6px;flex-wrap:wrap}
-  .controls button,.controls select{flex:1;min-width:70px;padding:8px 10px;font-size:12px}
   .calendar{padding:12px;border-radius:12px}
   .grid{gap:4px}
   .day{min-height:60px;padding:5px;font-size:12px;border-radius:8px;border-width:1px}
@@ -137,6 +193,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .whatsapp-button{width:52px;height:52px;font-size:26px}
   .whatsapp-widget{bottom:16px;right:16px}
   .whatsapp-tooltip{font-size:12px;padding:10px 12px;bottom:70px;max-width:180px}
+  .monthly-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 @media(max-width:400px){
@@ -151,7 +208,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .label{font-size:9px}
   .edit-btn{font-size:12px}
   .controls{gap:4px}
-  .controls button,.controls select{padding:6px 8px;font-size:11px;min-width:60px}
+  .controls button,.controls select{padding:6px 8px;font-size:11px;min-width:50px}
   .calendar{padding:10px;border-radius:10px}
   .grid{gap:3px}
   .day{min-height:55px;padding:4px;font-size:11px}
@@ -165,6 +222,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
   .modal-content h2{font-size:16px}
   .whatsapp-button{width:48px;height:48px;font-size:24px}
   .whatsapp-widget{bottom:12px;right:12px}
+  .monthly-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -182,6 +240,7 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
       <button id="prev">‹ Year</button>
       <select id="year"></select>
       <button id="next">Year ›</button>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
     </div>
   </div>
 
@@ -189,6 +248,12 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
     <div class="card">
       <div class="label">Selected this quarter</div>
       <div class="value highlight" id="qdays">0</div>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
+      </div>
     </div>
     <div class="card editable" id="targetCard">
       <div class="card-header">
@@ -206,6 +271,10 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
     <div class="card">
       <div class="label">Year total</div>
       <div class="value" id="ydays">0</div>
+      <div class="monthly-stats">
+        <h4>Monthly Breakdown</h4>
+        <div class="monthly-grid" id="monthlyGrid"></div>
+      </div>
     </div>
   </div>
 
@@ -214,6 +283,10 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
       <button id="prevMonth">‹ Prev</button>
       <strong id="monthTitle"></strong>
       <button id="nextMonth">Next ›</button>
+      <div class="view-toggle">
+        <button id="viewMonth" class="active">Month</button>
+        <button id="viewQuarter">Quarter</button>
+      </div>
     </div>
     <div class="grid" id="calendar"></div>
     <div class="note">💡 Tap/click a date to mark or unmark an office day. Weekends are shown separately but can still be selected.</div>
@@ -249,19 +322,26 @@ body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;ba
 <script>
 const KEY_DATA="officeDaysTracker_v1";
 const KEY_TARGET="officeDaysTrackerTarget";
+const KEY_THEME="officeDaysTrackerTheme";
 let data=JSON.parse(localStorage.getItem(KEY_DATA)||"{}");
 let quarterTarget=parseInt(localStorage.getItem(KEY_TARGET)||"24");
+let isDarkMode=localStorage.getItem(KEY_THEME)==="dark";
 let view=new Date(); view.setDate(1);
+let isQuarterView=false;
 const $=id=>document.getElementById(id);
 let pendingAction=null;
 let editingTarget=false;
 
+if(isDarkMode) document.body.classList.add("dark-mode");
+
 function save(){localStorage.setItem(KEY_DATA,JSON.stringify(data));}
 function saveTarget(){localStorage.setItem(KEY_TARGET,quarterTarget.toString());}
+function saveTheme(){localStorage.setItem(KEY_THEME,isDarkMode?"dark":"light");}
 function key(d){return d.toISOString().slice(0,10)}
 function quarter(m){return Math.floor(m/3)+1}
 function quarterRange(y,q){return [new Date(y,(q-1)*3,1),new Date(y,q*3,0)]}
 function daysInQuarter(y,q){let [a,b]=quarterRange(y,q), n=0;for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)) if(data[key(d)])n++;return n}
+function daysInMonth(y,m){let d=new Date(y,m,1),e=new Date(y,m+1,0),n=0;for(;d<=e;d.setDate(d.getDate()+1))if(data[key(d)])n++;return n}
 
 function showModal(title,message,action,isTargetEdit=false){
   $("modalTitle").textContent=title;
@@ -303,18 +383,27 @@ function confirmAction(){
   }
 }
 
-function render(){
+function renderCalendar(){
   const y=view.getFullYear(), m=view.getMonth(), q=quarter(m);
-  $("monthTitle").textContent=view.toLocaleString(undefined,{month:"long",year:"numeric"});
-  $("year").value=y;
-  const first=new Date(y,m,1), last=new Date(y,m+1,0);
+  let startDate,endDate;
+  
+  if(isQuarterView){
+    [startDate,endDate]=quarterRange(y,q);
+  }else{
+    startDate=new Date(y,m,1);
+    endDate=new Date(y,m+1,0);
+  }
+  
   const cal=$("calendar");cal.innerHTML="";
   ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(x=>{let e=document.createElement("div");e.className="dow";e.textContent=x;cal.appendChild(e)});
-  for(let i=0;i<first.getDay();i++){let e=document.createElement("div");e.className="day empty";cal.appendChild(e)}
-  for(let n=1;n<=last.getDate();n++){
-    let d=new Date(y,m,n), k=key(d), e=document.createElement("div");
+  
+  const firstDay=new Date(startDate);
+  for(let i=0;i<firstDay.getDay();i++){let e=document.createElement("div");e.className="day empty";cal.appendChild(e)}
+  
+  for(let d=new Date(startDate);d<=endDate;d.setDate(d.getDate()+1)){
+    let k=key(d), e=document.createElement("div");
     e.className="day"+(d.getDay()==0||d.getDay()==6?" weekend ":"")+(data[k]?" office ":"")+(key(d)==key(new Date())?" today":"");
-    e.innerHTML='<div class="num">'+n+'</div>'+(data[k]?'<div class="tag">OFFICE</div>':'');
+    e.innerHTML='<div class="num">'+d.getDate()+'</div>'+(data[k]?'<div class="tag">OFFICE</div>':'');
     e.onclick=()=>{
       const dateStr=d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
       const isMarked=!!data[k];
@@ -328,19 +417,70 @@ function render(){
     };
     cal.appendChild(e);
   }
+}
+
+function render(){
+  const y=view.getFullYear(), m=view.getMonth(), q=quarter(m);
+  
+  if(isQuarterView){
+    $("monthTitle").textContent="Q"+q+" "+y;
+  }else{
+    $("monthTitle").textContent=view.toLocaleString(undefined,{month:"long",year:"numeric"});
+  }
+  
+  $("year").value=y;
+  
+  renderCalendar();
+  
   const qcount=daysInQuarter(y,q);
   $("qdays").textContent=qcount;
+  const percent=Math.min(100,Math.round((qcount/quarterTarget)*100));
+  $("progressFill").style.width=percent+"%";
+  $("progressText").textContent=percent+"%";
   $("quarterTarget").textContent=quarterTarget;
   $("remaining").textContent=Math.max(0,quarterTarget-qcount);
-  let total=0;Object.keys(data).forEach(k=>{if(k.startsWith(y+"-"))total++});$("ydays").textContent=total;
+  
+  let total=0;Object.keys(data).forEach(k=>{if(k.startsWith(y+"-"))total++});
+  $("ydays").textContent=total;
+  
+  const monthlyGrid=$("monthlyGrid");
+  monthlyGrid.innerHTML="";
+  for(let i=0;i<12;i++){
+    const cnt=daysInMonth(y,i);
+    const div=document.createElement("div");
+    div.className="month-item";
+    div.innerHTML='<span class="month-num">'+cnt+'</span><span class="month-label">'+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]+'</span>';
+    monthlyGrid.appendChild(div);
+  }
 }
 
 for(let y=2025;y<=2035;y++){let o=document.createElement("option");o.value=y;o.textContent=y;$("year").appendChild(o)}
+
 $("year").onchange=()=>{view.setFullYear(+$("year").value);render()};
 $("prev").onclick=()=>{view.setFullYear(view.getFullYear()-1);render()};
 $("next").onclick=()=>{view.setFullYear(view.getFullYear()+1);render()};
 $("prevMonth").onclick=()=>{view.setMonth(view.getMonth()-1);render()};
 $("nextMonth").onclick=()=>{view.setMonth(view.getMonth()+1);render()};
+
+$("viewMonth").onclick=()=>{
+  isQuarterView=false;
+  $("viewMonth").classList.add("active");
+  $("viewQuarter").classList.remove("active");
+  render();
+};
+
+$("viewQuarter").onclick=()=>{
+  isQuarterView=true;
+  $("viewQuarter").classList.add("active");
+  $("viewMonth").classList.remove("active");
+  render();
+};
+
+$("themeToggle").onclick=()=>{
+  isDarkMode=!isDarkMode;
+  document.body.classList.toggle("dark-mode");
+  saveTheme();
+};
 
 $("targetCard").onclick=()=>{
   showModal("Edit Quarter Target","Enter the number of office days target for this quarter:",()=>{},true);

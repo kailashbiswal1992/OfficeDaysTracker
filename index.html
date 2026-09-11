@@ -132,6 +132,23 @@ body.dark-mode .modal-buttons .cancel{background:#4a5568;color:#e0e7ff}
 .modal-buttons .cancel:hover{background:#cbd5e1;transform:translateY(-2px)}
 body.dark-mode .modal-buttons .cancel:hover{background:#718096}
 #fileInput{display:none}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{width:min(420px,100%);background:white;border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+body.dark-mode .auth-card{background:#1a2332;color:#e0e7ff}
+.auth-card h1{margin:0 0 8px;color:#0f172a;font-size:26px;text-align:center}
+body.dark-mode .auth-card h1{color:#e0e7ff}
+.auth-card p{margin:0 0 22px;color:#64748b;text-align:center;font-size:14px}
+body.dark-mode .auth-card p{color:#cbd5e1}
+.auth-form{display:grid;gap:12px}
+.auth-form label{font-size:13px;font-weight:600;color:#475569}
+body.dark-mode .auth-form label{color:#cbd5e1}
+.auth-form input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:15px;background:white;color:#172033}
+body.dark-mode .auth-form input{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+.auth-form button{padding:12px;border:0;border-radius:9px;background:#0066cc;color:white;font-size:15px;font-weight:600;cursor:pointer}
+.auth-form button:hover{background:#0052a3}
+.auth-switch{margin-top:16px!important;margin-bottom:0!important;color:#0066cc!important;cursor:pointer}
+.auth-error{min-height:18px;color:#dc2626!important;margin:0!important;text-align:left!important}
+#appContent{display:none}
 .whatsapp-widget{position:fixed;bottom:30px;right:30px;z-index:999;animation:bounce 2s infinite}
 .whatsapp-button{display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:#25D366;border-radius:50%;box-shadow:0 8px 24px rgba(37,211,102,0.4);cursor:pointer;transition:all 0.3s;text-decoration:none;font-size:32px;border:none}
 .whatsapp-button:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,0.6)}
@@ -240,8 +257,27 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .monthly-toggle{width:16px;height:16px;font-size:10px}
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <h1>Office Days Tracker</h1>
+    <p id="authSubtitle">Sign in to continue</p>
+    <form class="auth-form" id="authForm">
+      <label for="authMobile">Mobile number</label>
+      <input id="authMobile" type="tel" inputmode="numeric" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required>
+      <label for="authPassword">Password</label>
+      <input id="authPassword" type="password" minlength="6" placeholder="At least 6 characters" required>
+      <p class="auth-error" id="authError"></p>
+      <button type="submit" id="authSubmit">Login</button>
+    </form>
+    <p class="auth-switch" id="authSwitch">New user? Sign up</p>
+  </div>
+</div>
+<div id="appContent">
 <div class="app">
   <div class="header">
     <a href="https://www.voya.com/" target="_blank" class="logo-link">
@@ -256,6 +292,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
       <select id="year"></select>
       <button id="next">Year ›</button>
       <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button id="logout" title="Sign out">Logout</button>
     </div>
   </div>
 
@@ -315,6 +352,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
     </div>
   </div>
 </div>
+</div>
 
 <div class="whatsapp-widget">
   <a href="https://wa.me/918260147054?text=Hi%20KCB%2C%20I%20have%20a%20suggestion%20or%20enhancement%20for%20the%20Office%20Days%20Tracker" target="_blank" class="whatsapp-button" title="Contact via WhatsApp">
@@ -338,6 +376,23 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 <input type="file" id="fileInput" accept=".json">
 
 <script>
+const firebaseConfig={
+  apiKey:"AIzaSyDykGxIq2GUDxFkv28NLmdRmiQzlEjvFuw",
+  authDomain:"rento-56bca.firebaseapp.com",
+  projectId:"rento-56bca",
+  storageBucket:"rento-56bca.appspot.com",
+  messagingSenderId:"641174222477",
+  appId:"1:641174222477:web:0c6c5999787c2ca05d14c4",
+  measurementId:"G-T3CSB1Z271"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+const trackerCollection="officedaystracker";
+let authMode="login";
+const phoneEmail=mobile=>`${mobile}@office-days-tracker.local`;
+
 const KEY_DATA="officeDaysTracker_v1";
 const KEY_TARGET="officeDaysTrackerTarget";
 const KEY_THEME="officeDaysTrackerTheme";
@@ -352,10 +407,112 @@ const $=id=>document.getElementById(id);
 let pendingAction=null;
 let editingTarget=false;
 
+function setAuthMode(mode){
+  authMode=mode;
+  $("authSubtitle").textContent=mode==="login"?"Sign in to continue":"Create your account";
+  $("authSubmit").textContent=mode==="login"?"Login":"Sign up";
+  $("authSwitch").textContent=mode==="login"?"New user? Sign up":"Already have an account? Login";
+  $("authError").textContent="";
+}
+
+function showAuthError(error){
+  const messages={
+    "auth/user-not-found":"No account found for this mobile number. Please sign up first.",
+    "auth/wrong-password":"Incorrect mobile number or password.",
+    "auth/invalid-credential":"Incorrect mobile number or password.",
+    "auth/email-already-in-use":"This mobile number is already registered. Please log in.",
+    "auth/weak-password":"Password must contain at least 6 characters.",
+    "auth/operation-not-allowed":"Email/Password sign-in is disabled in Firebase Authentication. Enable it under Authentication → Sign-in method.",
+    "auth/admin-restricted-operation":"Email/Password sign-in is disabled or restricted for this Firebase project. Enable it under Authentication → Sign-in method.",
+    "auth/configuration-not-found":"Firebase Authentication is not configured. Enable Email/Password sign-in in Firebase Console and verify the project configuration.",
+    "auth/invalid-api-key":"The Firebase API key is invalid. Check the Firebase web app configuration.",
+    "auth/network-request-failed":"Network error. Check your connection and try again."
+  };
+  $("authError").textContent=messages[error.code]||error.message||"Authentication failed. Please try again.";
+}
+
+$("authSwitch").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
+$("authForm").onsubmit=async e=>{
+  e.preventDefault();
+  const mobile=$("authMobile").value.trim();
+  const password=$("authPassword").value;
+  const submit=$("authSubmit");
+  $("authError").textContent="";
+  if(!/^[0-9]{10}$/.test(mobile)){
+    $("authError").textContent="Enter a valid 10-digit mobile number.";
+    return;
+  }
+  submit.disabled=true;
+  submit.textContent=authMode==="login"?"Logging in…":"Creating account…";
+  try{
+    if(authMode==="login"){
+      await auth.signInWithEmailAndPassword(phoneEmail(mobile),password);
+    }else{
+      const credential=await auth.createUserWithEmailAndPassword(phoneEmail(mobile),password);
+      try{
+        await db.collection(trackerCollection).doc(credential.user.uid).set({
+          uid:credential.user.uid,
+          mobile,
+          data:{},
+          quarterTarget:24,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        },{merge:true});
+      }catch(error){
+        console.error("Account created, but tracker profile could not be saved:",error);
+      }
+    }
+  }catch(error){
+    showAuthError(error);
+  }finally{
+    submit.disabled=false;
+    submit.textContent=authMode==="login"?"Login":"Sign up";
+  }
+};
+
+$("logout").onclick=()=>auth.signOut();
+auth.onAuthStateChanged(async user=>{
+  $("authScreen").style.display=user?"none":"flex";
+  $("appContent").style.display=user?"block":"none";
+  if(!user)return;
+  data={};
+  quarterTarget=24;
+  try{
+    const snapshot=await db.collection(trackerCollection).doc(user.uid).get();
+    if(snapshot.exists){
+      const saved=snapshot.data();
+      if(saved.data&&typeof saved.data==="object")data=saved.data;
+      if(Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0)quarterTarget=saved.quarterTarget;
+      localStorage.setItem(KEY_DATA,JSON.stringify(data));
+      localStorage.setItem(KEY_TARGET,quarterTarget.toString());
+    }
+  }catch(error){
+    console.error("Unable to load tracker data from Firebase:",error);
+  }
+  render();
+});
+
 if(isDarkMode) document.body.classList.add("dark-mode");
 
-function save(){localStorage.setItem(KEY_DATA,JSON.stringify(data));}
-function saveTarget(){localStorage.setItem(KEY_TARGET,quarterTarget.toString());}
+async function save(){
+  localStorage.setItem(KEY_DATA,JSON.stringify(data));
+  const user=auth.currentUser;
+  if(!user)return;
+  try{
+    await db.collection(trackerCollection).doc(user.uid).set({
+      uid:user.uid,
+      data,
+      quarterTarget,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  }catch(error){
+    console.error("Unable to save tracker data to Firebase:",error);
+  }
+}
+function saveTarget(){
+  localStorage.setItem(KEY_TARGET,quarterTarget.toString());
+  save();
+}
 function saveTheme(){localStorage.setItem(KEY_THEME,isDarkMode?"dark":"light");}
 function saveMonthlyState(){localStorage.setItem(KEY_MONTHLY_STATE,isMonthlyExpanded?"true":"false");}
 function key(d){return d.toISOString().slice(0,10)}

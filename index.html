@@ -273,9 +273,9 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   <div class="auth-card">
     <h1>Office Days Tracker</h1>
     <p id="authSubtitle">Sign in to continue</p>
-    <form class="auth-form" id="authForm">
+    <form class="auth-form" id="authForm" novalidate>
       <label for="authMobile">Mobile number</label>
-      <input id="authMobile" type="tel" inputmode="numeric" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required>
+      <input id="authMobile" type="tel" inputmode="numeric" placeholder="Ex 98765XXXXX" pattern="[6-9][0-9]{9}" maxlength="10" required>
       <label for="authPassword">Password</label>
       <input id="authPassword" type="password" minlength="6" placeholder="At least 6 characters" required>
       <p class="auth-error" id="authError"></p>
@@ -462,8 +462,16 @@ $("authForm").onsubmit=async e=>{
   const password=$("authPassword").value;
   const submit=$("authSubmit");
   $("authError").textContent="";
-  if(!/^[0-9]{10}$/.test(mobile)){
-    $("authError").textContent="Enter a valid 10-digit mobile number.";
+  if(!/^\d+$/.test(mobile)){
+    $("authError").textContent="Mobile number must contain digits only.";
+    return;
+  }
+  if(mobile.length!==10){
+    $("authError").textContent="Mobile number must contain exactly 10 digits.";
+    return;
+  }
+  if(!/^[6-9]/.test(mobile)){
+    $("authError").textContent="Mobile number must start with 6, 7, 8, or 9.";
     return;
   }
   submit.disabled=true;

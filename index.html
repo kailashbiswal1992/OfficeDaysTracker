@@ -14,7 +14,7 @@ body.dark-mode .header{background:#1a2332;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
 body.dark-mode .header {color:#e0e7ff}
 .logo-section{display:flex;align-items:center;gap:16px}
 .logo-link{display:flex;align-items:center;gap:16px;text-decoration:none;cursor:pointer}
-.logo{width:50px;height:50px;background:linear-gradient(135deg,#0066cc 0%,#0052a3 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:24px}
+.logo{width:50px;height:50px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain}
 .title-group h1{font-size:28px;margin:0;font-weight:700;color:#0f172a;transition:color 0.3s}
 body.dark-mode .title-group h1{color:#e0e7ff}
 .title-group p{font-size:13px;color:#64748b;margin:4px 0 0 0;transition:color 0.3s}
@@ -147,8 +147,14 @@ body.dark-mode .auth-form input{background:#2d3748;color:#e0e7ff;border-color:#4
 .auth-form button{padding:12px;border:0;border-radius:9px;background:#0066cc;color:white;font-size:15px;font-weight:600;cursor:pointer}
 .auth-form button:hover{background:#0052a3}
 .auth-switch{margin-top:16px!important;margin-bottom:0!important;color:#0066cc!important;cursor:pointer}
+.forgot-password{display:block;margin:2px 0 0;text-align:center;color:#0066cc;text-decoration:none;font-size:13px;font-weight:600}
+.forgot-password:hover{text-decoration:underline}
 .auth-error{min-height:18px;color:#dc2626!important;margin:0!important;text-align:left!important}
 #appContent{display:none}
+.build-watermark{position:fixed;left:14px;bottom:10px;color:rgba(226,232,240,.72);font-size:11px;letter-spacing:.3px;z-index:10;pointer-events:none}
+body.dark-mode .build-watermark{color:rgba(148,163,184,.72)}
+/* Firebase restores the session asynchronously; avoid showing the login form during that check. */
+#authScreen{display:none}
 .whatsapp-widget{position:fixed;bottom:30px;right:30px;z-index:999;animation:bounce 2s infinite}
 .whatsapp-button{display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:#25D366;border-radius:50%;box-shadow:0 8px 24px rgba(37,211,102,0.4);cursor:pointer;transition:all 0.3s;text-decoration:none;font-size:32px;border:none}
 .whatsapp-button:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,0.6)}
@@ -260,6 +266,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 </head>
 <body>
 <div class="auth-screen" id="authScreen">
@@ -273,6 +280,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
       <input id="authPassword" type="password" minlength="6" placeholder="At least 6 characters" required>
       <p class="auth-error" id="authError"></p>
       <button type="submit" id="authSubmit">Login</button>
+      <a class="forgot-password" id="forgotPassword" href="https://wa.me/918260147054?text=Hi%20KCB%2C%20I%20forgot%20my%20Office%20Days%20Tracker%20password.%20My%20registered%20mobile%20number%20is%20" target="_blank" rel="noopener">Forgot password?</a>
     </form>
     <p class="auth-switch" id="authSwitch">New user? Sign up</p>
   </div>
@@ -281,7 +289,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 <div class="app">
   <div class="header">
     <a href="https://www.voya.com/" target="_blank" class="logo-link">
-      <div class="logo">V</div>
+      <div class="logo"><img src="https://cdn.voya.com/global/images/logo/1.0.1/logo.svg" alt="Voya logo"></div>
       <div class="title-group">
         <h1>Office Days Tracker</h1>
         <p>Powered by KCB</p>
@@ -355,7 +363,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 </div>
 
 <div class="whatsapp-widget">
-  <a href="https://wa.me/918260147054?text=Hi%20KCB%2C%20I%20have%20a%20suggestion%20or%20enhancement%20for%20the%20Office%20Days%20Tracker" target="_blank" class="whatsapp-button" title="Contact via WhatsApp">
+  <a href="https://wa.me/918260147054?text=Hi%20KCB%2C%20I%20have%20a%20suggestion%20or%20enhancement%20for%20the%20Office%20Days%20Tracker" target="_blank" rel="noopener" class="whatsapp-button" title="Contact via WhatsApp">
     💬
   </a>
   <div class="whatsapp-tooltip">Looking for enhancements or suggestions? Text us on WhatsApp!</div>
@@ -374,20 +382,12 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 </div>
 
 <input type="file" id="fileInput" accept=".json">
+<div class="build-watermark">Build v26.9.12</div>
 
 <script>
-const firebaseConfig={
-  apiKey:"AIzaSyDykGxIq2GUDxFkv28NLmdRmiQzlEjvFuw",
-  authDomain:"rento-56bca.firebaseapp.com",
-  projectId:"rento-56bca",
-  storageBucket:"rento-56bca.appspot.com",
-  messagingSenderId:"641174222477",
-  appId:"1:641174222477:web:0c6c5999787c2ca05d14c4",
-  measurementId:"G-T3CSB1Z271"
-};
-
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
+let authStateResolved=false;
 const db=firebase.firestore();
 const trackerCollection="officedaystracker";
 let authMode="login";
@@ -397,6 +397,7 @@ const KEY_DATA="officeDaysTracker_v1";
 const KEY_TARGET="officeDaysTrackerTarget";
 const KEY_THEME="officeDaysTrackerTheme";
 const KEY_MONTHLY_STATE="officeDaysTrackerMonthlyExpanded";
+const KEY_PENDING_SYNC="officeDaysTrackerPendingSync";
 let data=JSON.parse(localStorage.getItem(KEY_DATA)||"{}");
 let quarterTarget=parseInt(localStorage.getItem(KEY_TARGET)||"24");
 let isDarkMode=localStorage.getItem(KEY_THEME)==="dark";
@@ -412,7 +413,23 @@ function setAuthMode(mode){
   $("authSubtitle").textContent=mode==="login"?"Sign in to continue":"Create your account";
   $("authSubmit").textContent=mode==="login"?"Login":"Sign up";
   $("authSwitch").textContent=mode==="login"?"New user? Sign up":"Already have an account? Login";
+  $("forgotPassword").style.display=mode==="login"?"block":"none";
   $("authError").textContent="";
+}
+
+async function ensureTrackerProfile(user,mobile){
+  const profileRef=db.collection(trackerCollection).doc(user.uid);
+  const snapshot=await profileRef.get();
+  if(!snapshot.exists){
+    await profileRef.set({
+      uid:user.uid,
+      mobile,
+      data:{},
+      quarterTarget:24,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
 }
 
 function showAuthError(error){
@@ -420,7 +437,7 @@ function showAuthError(error){
     "auth/user-not-found":"No account found for this mobile number. Please sign up first.",
     "auth/wrong-password":"Incorrect mobile number or password.",
     "auth/invalid-credential":"Incorrect mobile number or password.",
-    "auth/email-already-in-use":"This mobile number is already registered. Please log in.",
+    "auth/email-already-in-use":"This mobile number already has a Firebase Authentication account. Please switch to Login; signing in will create or restore its tracker profile in Firestore.",
     "auth/weak-password":"Password must contain at least 6 characters.",
     "auth/operation-not-allowed":"Email/Password sign-in is disabled in Firebase Authentication. Enable it under Authentication → Sign-in method.",
     "auth/admin-restricted-operation":"Email/Password sign-in is disabled or restricted for this Firebase project. Enable it under Authentication → Sign-in method.",
@@ -432,6 +449,13 @@ function showAuthError(error){
 }
 
 $("authSwitch").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
+$("forgotPassword").onclick=e=>{
+  const mobile=$("authMobile").value.trim();
+  const message=mobile
+    ? `Hi KCB, I forgot my Office Days Tracker password. My registered mobile number is ${mobile}.`
+    : "Hi KCB, I forgot my Office Days Tracker password. Please help me reset it.";
+  e.currentTarget.href=`https://wa.me/918260147054?text=${encodeURIComponent(message)}`;
+};
 $("authForm").onsubmit=async e=>{
   e.preventDefault();
   const mobile=$("authMobile").value.trim();
@@ -445,23 +469,13 @@ $("authForm").onsubmit=async e=>{
   submit.disabled=true;
   submit.textContent=authMode==="login"?"Logging in…":"Creating account…";
   try{
+    let credential;
     if(authMode==="login"){
-      await auth.signInWithEmailAndPassword(phoneEmail(mobile),password);
+      credential=await auth.signInWithEmailAndPassword(phoneEmail(mobile),password);
     }else{
-      const credential=await auth.createUserWithEmailAndPassword(phoneEmail(mobile),password);
-      try{
-        await db.collection(trackerCollection).doc(credential.user.uid).set({
-          uid:credential.user.uid,
-          mobile,
-          data:{},
-          quarterTarget:24,
-          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-        },{merge:true});
-      }catch(error){
-        console.error("Account created, but tracker profile could not be saved:",error);
-      }
+      credential=await auth.createUserWithEmailAndPassword(phoneEmail(mobile),password);
     }
+    await ensureTrackerProfile(credential.user,mobile);
   }catch(error){
     showAuthError(error);
   }finally{
@@ -472,20 +486,25 @@ $("authForm").onsubmit=async e=>{
 
 $("logout").onclick=()=>auth.signOut();
 auth.onAuthStateChanged(async user=>{
+  authStateResolved=true;
   $("authScreen").style.display=user?"none":"flex";
   $("appContent").style.display=user?"block":"none";
   if(!user)return;
-  data={};
-  quarterTarget=24;
+  const hasPendingSync=localStorage.getItem(KEY_PENDING_SYNC)==="true";
+  if(!hasPendingSync){
+    data={};
+    quarterTarget=24;
+  }
   try{
     const snapshot=await db.collection(trackerCollection).doc(user.uid).get();
-    if(snapshot.exists){
+    if(snapshot.exists&&!hasPendingSync){
       const saved=snapshot.data();
       if(saved.data&&typeof saved.data==="object")data=saved.data;
       if(Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0)quarterTarget=saved.quarterTarget;
       localStorage.setItem(KEY_DATA,JSON.stringify(data));
       localStorage.setItem(KEY_TARGET,quarterTarget.toString());
     }
+    if(hasPendingSync)await save();
   }catch(error){
     console.error("Unable to load tracker data from Firebase:",error);
   }
@@ -494,20 +513,36 @@ auth.onAuthStateChanged(async user=>{
 
 if(isDarkMode) document.body.classList.add("dark-mode");
 
-async function save(){
+let saveQueue=Promise.resolve();
+
+function save(){
   localStorage.setItem(KEY_DATA,JSON.stringify(data));
+  localStorage.setItem(KEY_TARGET,quarterTarget.toString());
+  localStorage.setItem(KEY_PENDING_SYNC,"true");
+
   const user=auth.currentUser;
-  if(!user)return;
-  try{
-    await db.collection(trackerCollection).doc(user.uid).set({
-      uid:user.uid,
-      data,
-      quarterTarget,
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-    },{merge:true});
-  }catch(error){
-    console.error("Unable to save tracker data to Firebase:",error);
-  }
+  if(!user)return saveQueue;
+
+  // Queue writes so an older request cannot finish after a newer deselection.
+  const snapshot={...data};
+  const target=quarterTarget;
+  saveQueue=saveQueue.then(async()=>{
+    try{
+      // Replace the complete data map so deleted dates are removed in Firestore.
+      await db.collection(trackerCollection).doc(user.uid).set({
+        uid:user.uid,
+        data:snapshot,
+        quarterTarget:target,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if(JSON.stringify(snapshot)===JSON.stringify(data)&&target===quarterTarget){
+        localStorage.removeItem(KEY_PENDING_SYNC);
+      }
+    }catch(error){
+      console.error("Unable to save tracker data to Firebase:",error);
+    }
+  });
+  return saveQueue;
 }
 function saveTarget(){
   localStorage.setItem(KEY_TARGET,quarterTarget.toString());
@@ -515,7 +550,12 @@ function saveTarget(){
 }
 function saveTheme(){localStorage.setItem(KEY_THEME,isDarkMode?"dark":"light");}
 function saveMonthlyState(){localStorage.setItem(KEY_MONTHLY_STATE,isMonthlyExpanded?"true":"false");}
-function key(d){return d.toISOString().slice(0,10)}
+function key(d){
+  const year=d.getFullYear();
+  const month=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${year}-${month}-${day}`;
+}
 function quarter(m){return Math.floor(m/3)+1}
 function quarterRange(y,q){return [new Date(y,(q-1)*3,1),new Date(y,q*3,0)]}
 function daysInQuarter(y,q){let [a,b]=quarterRange(y,q), n=0;for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)) if(data[key(d)])n++;return n}

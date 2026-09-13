@@ -204,7 +204,7 @@ body.dark-mode .admin-table td{color:#e0e7ff;border-bottom-color:#4a5568}
 .admin-table-card{border:0;border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 15px 40px rgba(30,41,59,.14);padding:22px}
 .admin-table-header h3{font-size:20px}.admin-export-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.admin-export{border:0;border-radius:9px;padding:9px 12px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:white;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 5px 12px rgba(37,99,235,.2)}.admin-export:hover{transform:translateY(-1px);filter:brightness(1.05)}.admin-table{min-width:1180px}.admin-table th{background:#eef2ff;color:#3730a3;padding:13px 10px}.admin-table th:first-child{border-radius:10px 0 0 10px}.admin-table th:last-child{border-radius:0 10px 10px 0}.admin-table td{padding:14px 10px}.admin-table tbody tr:hover{background:#f8fafc}
 .admin-user{font-weight:700;color:#1e3a8a!important}.admin-quarter{font-weight:700;color:#475569!important}.admin-marked{font-weight:800;color:#047857!important}.admin-progress{display:block;margin-top:5px;width:72px;height:5px;border-radius:5px;background:#e2e8f0;overflow:hidden}.admin-progress i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#06b6d4,#7c3aed)}
-@media(max-width:768px){.admin-screen{padding:16px}.admin-metrics{grid-template-columns:repeat(2,1fr)}.admin-topbar{align-items:flex-start}.admin-table-header{align-items:stretch;flex-direction:column}.admin-search{min-width:0;width:100%}}
+@media(max-width:768px){.admin-screen{padding:16px}.admin-metrics{grid-template-columns:repeat(2,1fr)}.admin-topbar{align-items:flex-start}.admin-table-header{align-items:stretch;flex-direction:column}.admin-search{min-width:0;width:100%}.admin-table-card{overflow-x:auto}.admin-table{min-width:760px;font-size:11px}.admin-table th,.admin-table td{padding:10px 7px}.admin-export-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px}.admin-export-actions .admin-search,.admin-export-actions .admin-export{width:100%;min-width:0}}
 @media(max-width:400px){.admin-metrics{grid-template-columns:1fr}.admin-topbar h2{font-size:21px}}
 /* Firebase restores the session asynchronously; avoid showing the login form during that check. */
 #authScreen{display:none}
@@ -246,6 +246,18 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 
 @media(max-width:600px){
   .app{padding:12px}
+  .admin-button.visible{display:block!important;flex:1 1 100%;width:100%;min-width:0;order:5}
+  .admin-screen{padding:12px}
+  .admin-topbar{padding:16px;flex-direction:column;align-items:stretch;gap:12px}
+  .admin-topbar h2{font-size:20px}
+  .admin-close{width:100%}
+  .admin-table-card{width:100%;max-width:100%;min-width:0;padding:12px;border-radius:12px;overflow-x:auto;overflow-y:hidden}
+  .admin-table-header{width:100%;min-width:0;gap:10px}
+  .admin-export-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px}
+  .admin-search,.admin-export{width:100%;min-width:0}
+  .admin-table{width:760px;min-width:760px;max-width:none;font-size:11px}
+  .admin-table th,.admin-table td{padding:10px 7px;white-space:nowrap}
+
   .header{flex-direction:column;text-align:center;gap:10px;padding:14px}
   .logo-section{flex-direction:column;gap:10px}
   .logo{width:40px;height:40px;font-size:18px}
@@ -283,6 +295,11 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .monthly-toggle{width:18px;height:18px;font-size:12px}
   .monthly-stats h4{font-size:11px}
 }
+
+/* Keep the admin dashboard inside the viewport; the wide data table scrolls only inside its card. */
+html,body{overflow-x:hidden}
+.admin-screen,.admin-panel,.admin-table-card{min-width:0;max-width:100%}
+.admin-table-card{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 
 @media(max-width:400px){
   .app{padding:8px}
@@ -450,7 +467,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 </div>
 
 <input type="file" id="fileInput" accept=".json">
-<div class="build-watermark">Build v26.9.13</div>
+<div class="build-watermark">Build v26.9.12</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);

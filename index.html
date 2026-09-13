@@ -160,6 +160,52 @@ body.dark-mode .auth-form input{background:#2d3748;color:#e0e7ff;border-color:#4
 #appContent{display:none}
 .build-watermark{position:fixed;left:14px;bottom:10px;color:rgba(226,232,240,.72);font-size:11px;letter-spacing:.3px;z-index:10;pointer-events:none}
 body.dark-mode .build-watermark{color:rgba(148,163,184,.72)}
+.admin-button{display:none!important;background:#7c3aed!important;color:white!important;border-color:#7c3aed!important}
+.admin-button.visible{display:inline-block!important}
+.admin-screen{display:none;position:fixed;inset:0;z-index:900;background:linear-gradient(135deg,#f8fafc,#e0f2fe);overflow:auto;padding:24px}
+body.dark-mode .admin-screen{background:linear-gradient(135deg,#0a0e27,#1a1f35)}
+.admin-panel{max-width:1180px;margin:auto}
+.admin-topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+.admin-topbar h2{margin:0;color:#0f172a;font-size:26px}
+body.dark-mode .admin-topbar h2{color:#e0e7ff}
+.admin-topbar p{margin:5px 0 0;color:#64748b;font-size:13px}
+body.dark-mode .admin-topbar p{color:#94a3b8}
+.admin-close{border:1px solid #cbd5e1;background:white;color:#0f172a;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer}
+body.dark-mode .admin-close{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+.admin-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.admin-metric,.admin-table-card{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+body.dark-mode .admin-metric,body.dark-mode .admin-table-card{background:#1a2332;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.admin-metric span{display:block;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+body.dark-mode .admin-metric span{color:#94a3b8}
+.admin-metric strong{display:block;margin-top:8px;color:#0f172a;font-size:30px}
+body.dark-mode .admin-metric strong{color:#e0e7ff}
+.admin-table-card{overflow:auto}
+.admin-table-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.admin-table-header h3{margin:0;color:#0f172a;font-size:17px}
+body.dark-mode .admin-table-header h3{color:#e0e7ff}
+.admin-search{padding:9px 12px;border:1px solid #cbd5e1;border-radius:8px;min-width:230px;font-size:13px;background:white;color:#172033}
+body.dark-mode .admin-search{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px;min-width:650px}
+.admin-table th{text-align:left;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid #e2e8f0;padding:10px 8px}
+.admin-table td{padding:12px 8px;border-bottom:1px solid #e2e8f0;color:#172033}.admin-select-cell{width:42px;text-align:center}.admin-select{width:16px;height:16px;accent-color:#2563eb;cursor:pointer}
+body.dark-mode .admin-table th{color:#94a3b8;border-bottom-color:#4a5568}
+body.dark-mode .admin-table td{color:#e0e7ff;border-bottom-color:#4a5568}
+.admin-empty{padding:24px;text-align:center;color:#64748b}
+/* Colorful, full-page admin dashboard */
+.admin-screen{padding:32px;background:radial-gradient(circle at 8% 12%,rgba(14,165,233,.28),transparent 28%),radial-gradient(circle at 92% 8%,rgba(168,85,247,.28),transparent 30%),linear-gradient(135deg,#eef2ff,#ecfeff 52%,#fdf2f8)}
+.admin-panel{max-width:1500px}
+.admin-topbar{padding:24px 28px;border-radius:22px;background:linear-gradient(135deg,#1d4ed8,#7c3aed 55%,#db2777);box-shadow:0 18px 45px rgba(79,70,229,.28)}
+.admin-topbar h2,.admin-topbar p{color:white!important}.admin-topbar p{opacity:.82}
+.admin-close{border:0;background:rgba(255,255,255,.18);color:white;padding:11px 18px}.admin-close:hover{background:rgba(255,255,255,.3)}
+.admin-metrics{grid-template-columns:repeat(4,1fr);gap:18px;margin:20px 0}
+.admin-quarter-metrics{margin-top:0}
+.admin-metric{border:0;border-radius:18px;padding:20px;background:rgba(255,255,255,.9);box-shadow:0 12px 30px rgba(30,41,59,.12)}
+.admin-metric:nth-child(1){border-top:5px solid #06b6d4}.admin-metric:nth-child(2){border-top:5px solid #10b981}.admin-metric:nth-child(3){border-top:5px solid #f59e0b}.admin-metric:nth-child(4){border-top:5px solid #ec4899}
+.admin-table-card{border:0;border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 15px 40px rgba(30,41,59,.14);padding:22px}
+.admin-table-header h3{font-size:20px}.admin-export-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.admin-export{border:0;border-radius:9px;padding:9px 12px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:white;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 5px 12px rgba(37,99,235,.2)}.admin-export:hover{transform:translateY(-1px);filter:brightness(1.05)}.admin-table{min-width:1180px}.admin-table th{background:#eef2ff;color:#3730a3;padding:13px 10px}.admin-table th:first-child{border-radius:10px 0 0 10px}.admin-table th:last-child{border-radius:0 10px 10px 0}.admin-table td{padding:14px 10px}.admin-table tbody tr:hover{background:#f8fafc}
+.admin-user{font-weight:700;color:#1e3a8a!important}.admin-quarter{font-weight:700;color:#475569!important}.admin-marked{font-weight:800;color:#047857!important}.admin-progress{display:block;margin-top:5px;width:72px;height:5px;border-radius:5px;background:#e2e8f0;overflow:hidden}.admin-progress i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#06b6d4,#7c3aed)}
+@media(max-width:768px){.admin-screen{padding:16px}.admin-metrics{grid-template-columns:repeat(2,1fr)}.admin-topbar{align-items:flex-start}.admin-table-header{align-items:stretch;flex-direction:column}.admin-search{min-width:0;width:100%}}
+@media(max-width:400px){.admin-metrics{grid-template-columns:1fr}.admin-topbar h2{font-size:21px}}
 /* Firebase restores the session asynchronously; avoid showing the login form during that check. */
 #authScreen{display:none}
 .whatsapp-widget{position:fixed;bottom:30px;right:30px;z-index:999;animation:bounce 2s infinite}
@@ -307,6 +353,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
       <select id="year"></select>
       <button id="next">Year ›</button>
       <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      <button id="adminButton" class="admin-button" title="Open admin dashboard">Admin Dashboard</button>
       <button id="logout" title="Sign out">Logout</button>
     </div>
   </div>
@@ -325,7 +372,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
     <div class="card editable" id="targetCard">
       <div class="card-header">
         <div>
-          <div class="label">Quarter target</div>
+          <div class="label" id="quarterTargetLabel">Quarter target</div>
           <div class="value" id="quarterTarget">24</div>
         </div>
         <button class="edit-btn" title="Edit target">✎</button>
@@ -369,6 +416,20 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 </div>
 </div>
 
+<div class="admin-screen" id="adminScreen">
+  <div class="admin-panel">
+    <div class="admin-topbar">
+      <div><h2>Admin Dashboard</h2><p>Read-only overview of all Office Days Tracker users</p></div>
+      <button class="admin-close" id="closeAdmin">Back to tracker</button>
+    </div>
+    <div class="admin-table-card">
+      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by mobile number"><button class="admin-export" id="exportAdminSelected">Export selected users</button><button class="admin-export" id="exportAdminAll">Export full dashboard</button></div></div>
+      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th></tr></thead><tbody id="adminRows"></tbody></table>
+      <div class="admin-empty" id="adminEmpty" style="display:none">No matching users found.</div>
+    </div>
+  </div>
+</div>
+
 <div class="whatsapp-widget">
   <a href="https://wa.me/918260147054?text=Hi%20KCB%2C%20I%20have%20a%20suggestion%20or%20enhancement%20for%20the%20Office%20Days%20Tracker" target="_blank" rel="noopener" class="whatsapp-button" title="Contact via WhatsApp">
     💬
@@ -389,7 +450,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
 </div>
 
 <input type="file" id="fileInput" accept=".json">
-<div class="build-watermark">Build v26.9.12</div>
+<div class="build-watermark">Build v26.9.13</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -397,6 +458,11 @@ const auth=firebase.auth();
 let authStateResolved=false;
 const db=firebase.firestore();
 const trackerCollection="officedaystracker";
+// Admin access is managed in Firestore at appConfig/admin.
+// Document format: { mobiles: ["9876543210"] }
+let adminMobiles=[];
+let adminRows=[];
+let adminYear=new Date().getFullYear();
 let authMode="login";
 const phoneEmail=mobile=>`${mobile}@office-days-tracker.local`;
 
@@ -406,7 +472,8 @@ const KEY_THEME="officeDaysTrackerTheme";
 const KEY_MONTHLY_STATE="officeDaysTrackerMonthlyExpanded";
 const KEY_PENDING_SYNC="officeDaysTrackerPendingSync";
 let data=JSON.parse(localStorage.getItem(KEY_DATA)||"{}");
-let quarterTarget=parseInt(localStorage.getItem(KEY_TARGET)||"24");
+let quarterTargets=JSON.parse(localStorage.getItem(KEY_TARGET)||"{}");
+if(!quarterTargets||typeof quarterTargets!=="object"||Array.isArray(quarterTargets))quarterTargets={};
 let isDarkMode=localStorage.getItem(KEY_THEME)==="dark";
 let isMonthlyExpanded=localStorage.getItem(KEY_MONTHLY_STATE)!=="false";
 let view=new Date(); view.setDate(1);
@@ -432,11 +499,146 @@ async function ensureTrackerProfile(user,mobile){
       uid:user.uid,
       mobile,
       data:{},
+      quarterTargets:{},
       quarterTarget:24,
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     });
+  }else if(!snapshot.data().mobile){
+    await profileRef.set({
+      uid:user.uid,
+      mobile
+    },{merge:true});
   }
+}
+
+function isAdmin(user){
+  const mobile=(user&&user.email||"").split("@")[0];
+  return adminMobiles.includes(mobile);
+}
+
+async function loadAdminConfig(){
+  try{
+    const snapshot=await db.collection("appConfig").doc("admin").get();
+    const config=snapshot.exists?snapshot.data():{};
+    adminMobiles=Array.isArray(config.mobiles)
+      ? config.mobiles.map(String).filter(mobile=>/^\d{10}$/.test(mobile))
+      : [];
+  }catch(error){
+    adminMobiles=[];
+    console.error("Unable to load admin configuration:",error);
+  }
+}
+
+function formatAdminDate(value){
+  if(!value)return "—";
+  const date=value.toDate?value.toDate():new Date(value);
+  return isNaN(date)?"—":date.toLocaleString();
+}
+
+function adminQuarterStats(savedData,year,quarterNumber){
+  const [start,end]=quarterRange(year,quarterNumber);
+  let marked=0;
+  for(let date=new Date(start);date<=end;date.setDate(date.getDate()+1)){
+    if(savedData[key(date)])marked++;
+  }
+  return marked;
+}
+
+function adminCell(target,marked){
+  const percent=target?Math.min(100,Math.round(marked/target*100)):0;
+  return `<td class="admin-quarter"><span class="admin-marked">${target} target / ${marked} marked</span><span class="admin-progress"><i style="width:${percent}%"></i></span></td>`;
+}
+
+function renderAdminRows(){
+  $("adminActivityTitle").textContent=`${adminYear} User In Office Details`;
+  const search=$("adminSearch").value.trim().toLowerCase();
+  const rows=adminRows.filter(row=>row.mobile.toLowerCase().includes(search));
+  $("adminRows").innerHTML=rows.map(row=>`<tr><td class="admin-select-cell"><input class="admin-select" type="checkbox" data-mobile="${row.mobile}" aria-label="Select ${row.mobile} for export"></td><td class="admin-user">${row.mobile}</td><td class="admin-marked">${row.yearDays}</td>${adminCell(row.targets[0],row.quarters[0])}${adminCell(row.targets[1],row.quarters[1])}${adminCell(row.targets[2],row.quarters[2])}${adminCell(row.targets[3],row.quarters[3])}<td>${formatAdminDate(row.updatedAt)}</td></tr>`).join("");
+  $("adminEmpty").style.display=rows.length?"none":"block";
+}
+
+function csvValue(value){
+  return `"${String(value??"").replace(/"/g,'""')}"`;
+}
+
+function exportAdminCsv(rows,filename){
+  if(!rows.length){
+    alert("No user data is available to export.");
+    return;
+  }
+  const year=adminYear;
+  const header=["Mobile number",`Days in ${year}`,"Q1 target","Q1 marked","Q2 target","Q2 marked","Q3 target","Q3 marked","Q4 target","Q4 marked","Last updated"];
+  const lines=[header, ...rows.map(row=>[
+    row.mobile,row.yearDays,
+    row.targets[0],row.quarters[0],
+    row.targets[1],row.quarters[1],
+    row.targets[2],row.quarters[2],
+    row.targets[3],row.quarters[3],
+    formatAdminDate(row.updatedAt)
+  ])].map(line=>line.map(csvValue).join(","));
+  const blob=new Blob([lines.join("\\r\\n")],{type:"text/csv;charset=utf-8"});
+  const link=document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  link.download=filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+const selectedAdminMobiles=new Set();
+
+function exportSelectedAdminUsers(){
+  const rows=adminRows.filter(row=>selectedAdminMobiles.has(row.mobile));
+  if(!rows.length){
+    alert("Select at least one user to export.");
+    return;
+  }
+  exportAdminCsv(rows,`office-days-selected-users-${adminYear}.csv`);
+}
+
+async function loadAdminDashboard(){
+  const snapshot=await db.collection(trackerCollection).get();
+  adminRows=snapshot.docs.map(doc=>{
+    const saved=doc.data()||{};
+    const savedData=saved.data&&typeof saved.data==="object"?saved.data:{};
+    const savedTargets=saved.quarterTargets&&typeof saved.quarterTargets==="object"?saved.quarterTargets:{};
+    const legacyTarget=Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0?saved.quarterTarget:24;
+    const targets=[1,2,3,4].map(q=>Number.isInteger(savedTargets[`${adminYear}-Q${q}`])&&savedTargets[`${adminYear}-Q${q}`]>0?savedTargets[`${adminYear}-Q${q}`]:legacyTarget);
+    const yearDays=Object.keys(savedData).filter(date=>savedData[date]&&date.startsWith(`${adminYear}-`)).length;
+    return {mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,targets,quarters:[1,2,3,4].map(q=>adminQuarterStats(savedData,adminYear,q)),updatedAt:saved.updatedAt};
+  }).sort((a,b)=>a.mobile.localeCompare(b.mobile));
+  renderAdminRows();
+}
+
+function populateAdminYears(){
+  const select=$("adminYear");
+  const currentYear=new Date().getFullYear();
+  select.innerHTML="";
+  for(let year=currentYear-5;year<=currentYear+5;year++){
+    const option=document.createElement("option");
+    option.value=year;
+    option.textContent=year;
+    select.appendChild(option);
+  }
+  select.value=adminYear;
+}
+
+function showAdminDashboard(){
+  if(!isAdmin(auth.currentUser))return;
+  $("appContent").style.display="none";
+  $("adminScreen").style.display="block";
+  populateAdminYears();
+  loadAdminDashboard().catch(error=>{
+    console.error("Unable to load admin dashboard:",error);
+    $("adminRows").innerHTML="";
+    $("adminEmpty").textContent="Unable to load user data. Check your Firestore rules.";
+    $("adminEmpty").style.display="block";
+  });
+}
+
+function hideAdminDashboard(){
+  $("adminScreen").style.display="none";
+  if(auth.currentUser)$("appContent").style.display="block";
 }
 
 function showAuthError(error){
@@ -500,24 +702,56 @@ $("authForm").onsubmit=async e=>{
 };
 
 $("logout").onclick=()=>auth.signOut();
+$("adminButton").onclick=showAdminDashboard;
+$("exportAdminSelected").onclick=exportSelectedAdminUsers;
+$("adminRows").onclick=e=>{
+  if(!e.target.classList.contains("admin-select"))return;
+  const mobile=e.target.dataset.mobile;
+  if(e.target.checked)selectedAdminMobiles.add(mobile);
+  else selectedAdminMobiles.delete(mobile);
+};
+$("closeAdmin").onclick=hideAdminDashboard;
+$("adminSearch").oninput=renderAdminRows;
+$("adminYear").onchange=()=>{
+  adminYear=Number($("adminYear").value);
+  loadAdminDashboard().catch(error=>{
+    console.error("Unable to load selected admin year:",error);
+    adminRows=[];
+    renderAdminRows();
+    $("adminEmpty").textContent="Unable to load user data.";
+    $("adminEmpty").style.display="block";
+  });
+};
+$("exportAdminAll").onclick=()=>exportAdminCsv(adminRows,`office-days-dashboard-${adminYear}.csv`);
 auth.onAuthStateChanged(async user=>{
   authStateResolved=true;
   $("authScreen").style.display=user?"none":"flex";
   $("appContent").style.display=user?"block":"none";
+  $("adminButton").classList.remove("visible");
+  adminMobiles=[];
   if(!user)return;
+  const signedInMobile=(user.email||"").split("@")[0];
+  try{
+    await ensureTrackerProfile(user,signedInMobile);
+  }catch(error){
+    console.error("Unable to ensure tracker profile:",error);
+  }
+  await loadAdminConfig();
+  if(isAdmin(user))$("adminButton").classList.add("visible");
   const hasPendingSync=localStorage.getItem(KEY_PENDING_SYNC)==="true";
   if(!hasPendingSync){
     data={};
-    quarterTarget=24;
+          quarterTargets={};
   }
   try{
     const snapshot=await db.collection(trackerCollection).doc(user.uid).get();
     if(snapshot.exists&&!hasPendingSync){
       const saved=snapshot.data();
       if(saved.data&&typeof saved.data==="object")data=saved.data;
-      if(Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0)quarterTarget=saved.quarterTarget;
+      if(saved.quarterTargets&&typeof saved.quarterTargets==="object")quarterTargets=saved.quarterTargets;
+      else if(Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0)quarterTargets={};
       localStorage.setItem(KEY_DATA,JSON.stringify(data));
-      localStorage.setItem(KEY_TARGET,quarterTarget.toString());
+      localStorage.setItem(KEY_TARGET,JSON.stringify(quarterTargets));
     }
     if(hasPendingSync)await save();
   }catch(error){
@@ -530,9 +764,11 @@ if(isDarkMode) document.body.classList.add("dark-mode");
 
 let saveQueue=Promise.resolve();
 
+function targetKey(year,q){return `${year}-Q${q}`}
+function getQuarterTarget(year,q){return Number.isInteger(quarterTargets[targetKey(year,q)])&&quarterTargets[targetKey(year,q)]>0?quarterTargets[targetKey(year,q)]:24}
 function save(){
   localStorage.setItem(KEY_DATA,JSON.stringify(data));
-  localStorage.setItem(KEY_TARGET,quarterTarget.toString());
+  localStorage.setItem(KEY_TARGET,JSON.stringify(quarterTargets));
   localStorage.setItem(KEY_PENDING_SYNC,"true");
 
   const user=auth.currentUser;
@@ -540,17 +776,19 @@ function save(){
 
   // Queue writes so an older request cannot finish after a newer deselection.
   const snapshot={...data};
-  const target=quarterTarget;
+  const targets={...quarterTargets};
   saveQueue=saveQueue.then(async()=>{
     try{
       // Replace the complete data map so deleted dates are removed in Firestore.
       await db.collection(trackerCollection).doc(user.uid).set({
         uid:user.uid,
+        mobile:(user.email||"").split("@")[0],
         data:snapshot,
-        quarterTarget:target,
+        quarterTargets:targets,
+        quarterTarget:24,
         updatedAt:firebase.firestore.FieldValue.serverTimestamp()
       });
-      if(JSON.stringify(snapshot)===JSON.stringify(data)&&target===quarterTarget){
+      if(JSON.stringify(snapshot)===JSON.stringify(data)&&JSON.stringify(targets)===JSON.stringify(quarterTargets)){
         localStorage.removeItem(KEY_PENDING_SYNC);
       }
     }catch(error){
@@ -560,7 +798,6 @@ function save(){
   return saveQueue;
 }
 function saveTarget(){
-  localStorage.setItem(KEY_TARGET,quarterTarget.toString());
   save();
 }
 function saveTheme(){localStorage.setItem(KEY_THEME,isDarkMode?"dark":"light");}
@@ -602,7 +839,7 @@ function showModal(title,message,action,isTargetEdit=false){
   const input=$("modalInput");
   if(isTargetEdit){
     input.style.display="block";
-    input.value=quarterTarget.toString();
+    input.value=getQuarterTarget(view.getFullYear(),quarter(view.getMonth())).toString();
     input.focus();
     setTimeout(()=>input.select(),0);
   }else{
@@ -626,7 +863,7 @@ function confirmAction(){
       alert("Please enter a valid number between 1 and 365");
       return;
     }
-    quarterTarget=newTarget;
+    quarterTargets[targetKey(view.getFullYear(),quarter(view.getMonth()))]=newTarget;
     saveTarget();
     render();
     closeModal();
@@ -686,12 +923,14 @@ function render(){
   renderCalendar();
   
   const qcount=daysInQuarter(y,q);
+  const currentTarget=getQuarterTarget(y,q);
   $("qdays").textContent=qcount;
-  const percent=Math.min(100,Math.round((qcount/quarterTarget)*100));
+  $("quarterTargetLabel").textContent=`Q${q} ${y} target`;
+  const percent=Math.min(100,Math.round((qcount/currentTarget)*100));
   $("progressFill").style.width=percent+"%";
   $("progressText").textContent=percent+"%";
-  $("quarterTarget").textContent=quarterTarget;
-  $("remaining").textContent=Math.max(0,quarterTarget-qcount);
+  $("quarterTarget").textContent=currentTarget;
+  $("remaining").textContent=Math.max(0,currentTarget-qcount);
   
   let total=0;Object.keys(data).forEach(k=>{if(k.startsWith(y+"-"))total++});
   $("ydays").textContent=total;
@@ -752,7 +991,7 @@ $("clearQuarter").onclick=()=>{
 };
 
 $("export").onclick=()=>{
-  const exportData={data,quarterTarget};
+  const exportData={data,quarterTargets};
   const blob=new Blob([JSON.stringify(exportData,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="office-days.json";a.click();URL.revokeObjectURL(a.href);
 };
@@ -774,9 +1013,9 @@ $("fileInput").onchange=(e)=>{
       const importTarget=imported.quarterTarget||24;
       showModal("Import Data","This will replace all your current data. Do you want to continue?",()=>{
         data=importData;
-        quarterTarget=importTarget;
+        quarterTargets=imported.quarterTargets||{};
+        if(imported.quarterTarget)quarterTargets[targetKey(view.getFullYear(),quarter(view.getMonth()))]=importTarget;
         save();
-        saveTarget();
         render();
         alert("Data imported successfully!");
       });

@@ -18,6 +18,8 @@ body.dark-mode .header {color:#e0e7ff}
 .title-group h1{font-size:28px;margin:0;font-weight:700;color:#0f172a;transition:color 0.3s}
 body.dark-mode .title-group h1{color:#e0e7ff}
 .title-group p{font-size:13px;color:#64748b;margin:4px 0 0 0;transition:color 0.3s}
+.welcome-message{margin-top:8px;color:#0066cc;font-size:13px;font-weight:700}
+body.dark-mode .welcome-message{color:#60a5fa}
 body.dark-mode .title-group p{color:#94a3b8}
 .controls{display:flex;gap:8px;align-items:center}
 .controls button,.controls select{padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;background:white;font-size:15px;cursor:pointer;font-weight:500;color:#0f172a;transition:all 0.2s}
@@ -344,6 +346,10 @@ html,body{overflow-x:hidden}
     <h1>Office Days Tracker</h1>
     <p id="authSubtitle">Sign in to continue</p>
     <form class="auth-form" id="authForm" novalidate>
+      <div id="nameFieldGroup">
+        <label for="authName">Name</label>
+        <input id="authName" type="text" autocomplete="name" placeholder="Enter your name" maxlength="80">
+      </div>
       <label for="authMobile">Mobile number</label>
       <input id="authMobile" type="tel" inputmode="numeric" placeholder="Ex 98765XXXXX" pattern="[6-9][0-9]{9}" maxlength="10" required>
       <label for="authPassword">Password</label>
@@ -358,13 +364,13 @@ html,body{overflow-x:hidden}
 <div id="appContent">
 <div class="app">
   <div class="header">
-    <a href="https://www.voya.com/" target="_blank" class="logo-link">
-      <div class="logo"><img src="https://cdn.voya.com/global/images/logo/1.0.1/logo.svg" alt="Voya logo"></div>
+    <div class="logo-section">
       <div class="title-group">
         <h1>Office Days Tracker</h1>
         <p>Powered by KCB</p>
+        <div class="welcome-message" id="welcomeMessage" aria-live="polite"></div>
       </div>
-    </a>
+    </div>
     <div class="controls">
       <button id="prev">‹ Year</button>
       <select id="year"></select>
@@ -440,8 +446,8 @@ html,body{overflow-x:hidden}
       <button class="admin-close" id="closeAdmin">Back to tracker</button>
     </div>
     <div class="admin-table-card">
-      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by mobile number"><button class="admin-export" id="exportAdminSelected">Export selected users</button><button class="admin-export" id="exportAdminAll">Export full dashboard</button></div></div>
-      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th></tr></thead><tbody id="adminRows"></tbody></table>
+      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by name or mobile number" aria-label="Search users by name or mobile number"><button class="admin-export" id="exportAdminSelected">Export selected users</button><button class="admin-export" id="exportAdminAll">Export full dashboard</button></div></div>
+      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Name</th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th></tr></thead><tbody id="adminRows"></tbody></table>
       <div class="admin-empty" id="adminEmpty" style="display:none">No matching users found.</div>
     </div>
   </div>
@@ -467,7 +473,7 @@ html,body{overflow-x:hidden}
 </div>
 
 <input type="file" id="fileInput" accept=".json">
-<div class="build-watermark">Build v26.9.12</div>
+<div class="build-watermark">Build v26.9.14</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -481,6 +487,7 @@ let adminMobiles=[];
 let adminRows=[];
 let adminYear=new Date().getFullYear();
 let authMode="login";
+let currentUserName="";
 const phoneEmail=mobile=>`${mobile}@office-days-tracker.local`;
 
 const KEY_DATA="officeDaysTracker_v1";
@@ -505,15 +512,20 @@ function setAuthMode(mode){
   $("authSubmit").textContent=mode==="login"?"Login":"Sign up";
   $("authSwitch").textContent=mode==="login"?"New user? Sign up":"Already have an account? Login";
   $("forgotPassword").style.display=mode==="login"?"block":"none";
+  $("nameFieldGroup").style.display=mode==="login"?"none":"block";
+  $("authName").required=mode!=="login";
   $("authError").textContent="";
 }
 
-async function ensureTrackerProfile(user,mobile){
+setAuthMode("login");
+
+async function ensureTrackerProfile(user,mobile,name=""){
   const profileRef=db.collection(trackerCollection).doc(user.uid);
   const snapshot=await profileRef.get();
   if(!snapshot.exists){
     await profileRef.set({
       uid:user.uid,
+      name,
       mobile,
       data:{},
       quarterTargets:{},
@@ -521,9 +533,10 @@ async function ensureTrackerProfile(user,mobile){
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     });
-  }else if(!snapshot.data().mobile){
+  }else if(!snapshot.data().mobile||name&&snapshot.data().name!==name){
     await profileRef.set({
       uid:user.uid,
+      ...(name?{name}:{}),
       mobile
     },{merge:true});
   }
@@ -570,8 +583,8 @@ function adminCell(target,marked){
 function renderAdminRows(){
   $("adminActivityTitle").textContent=`${adminYear} User In Office Details`;
   const search=$("adminSearch").value.trim().toLowerCase();
-  const rows=adminRows.filter(row=>row.mobile.toLowerCase().includes(search));
-  $("adminRows").innerHTML=rows.map(row=>`<tr><td class="admin-select-cell"><input class="admin-select" type="checkbox" data-mobile="${row.mobile}" aria-label="Select ${row.mobile} for export"></td><td class="admin-user">${row.mobile}</td><td class="admin-marked">${row.yearDays}</td>${adminCell(row.targets[0],row.quarters[0])}${adminCell(row.targets[1],row.quarters[1])}${adminCell(row.targets[2],row.quarters[2])}${adminCell(row.targets[3],row.quarters[3])}<td>${formatAdminDate(row.updatedAt)}</td></tr>`).join("");
+  const rows=adminRows.filter(row=>`${row.name} ${row.mobile}`.toLowerCase().includes(search));
+  $("adminRows").innerHTML=rows.map(row=>`<tr><td class="admin-select-cell"><input class="admin-select" type="checkbox" data-mobile="${row.mobile}" aria-label="Select ${row.mobile} for export"></td><td class="admin-user">${row.name||"—"}</td><td class="admin-user">${row.mobile}</td><td class="admin-marked">${row.yearDays}</td>${adminCell(row.targets[0],row.quarters[0])}${adminCell(row.targets[1],row.quarters[1])}${adminCell(row.targets[2],row.quarters[2])}${adminCell(row.targets[3],row.quarters[3])}<td>${formatAdminDate(row.updatedAt)}</td></tr>`).join("");
   $("adminEmpty").style.display=rows.length?"none":"block";
 }
 
@@ -585,9 +598,9 @@ function exportAdminCsv(rows,filename){
     return;
   }
   const year=adminYear;
-  const header=["Mobile number",`Days in ${year}`,"Q1 target","Q1 marked","Q2 target","Q2 marked","Q3 target","Q3 marked","Q4 target","Q4 marked","Last updated"];
+  const header=["Name","Mobile number",`Days in ${year}`,"Q1 target","Q1 marked","Q2 target","Q2 marked","Q3 target","Q3 marked","Q4 target","Q4 marked","Last updated"];
   const lines=[header, ...rows.map(row=>[
-    row.mobile,row.yearDays,
+    row.name,row.mobile,row.yearDays,
     row.targets[0],row.quarters[0],
     row.targets[1],row.quarters[1],
     row.targets[2],row.quarters[2],
@@ -622,7 +635,7 @@ async function loadAdminDashboard(){
     const legacyTarget=Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0?saved.quarterTarget:24;
     const targets=[1,2,3,4].map(q=>Number.isInteger(savedTargets[`${adminYear}-Q${q}`])&&savedTargets[`${adminYear}-Q${q}`]>0?savedTargets[`${adminYear}-Q${q}`]:legacyTarget);
     const yearDays=Object.keys(savedData).filter(date=>savedData[date]&&date.startsWith(`${adminYear}-`)).length;
-    return {mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,targets,quarters:[1,2,3,4].map(q=>adminQuarterStats(savedData,adminYear,q)),updatedAt:saved.updatedAt};
+    return {name:saved.name||"",mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,targets,quarters:[1,2,3,4].map(q=>adminQuarterStats(savedData,adminYear,q)),updatedAt:saved.updatedAt};
   }).sort((a,b)=>a.mobile.localeCompare(b.mobile));
   renderAdminRows();
 }
@@ -684,10 +697,25 @@ $("forgotPassword").onclick=e=>{
 };
 $("authForm").onsubmit=async e=>{
   e.preventDefault();
+  const name=$("authName").value.trim();
   const mobile=$("authMobile").value.trim();
   const password=$("authPassword").value;
   const submit=$("authSubmit");
   $("authError").textContent="";
+  if(authMode==="signup"){
+    if(!name){
+      $("authError").textContent="Please enter your name.";
+      return;
+    }
+    if(name.length<2||name.length>80){
+      $("authError").textContent="Name must be between 2 and 80 characters.";
+      return;
+    }
+    if(!/^[\p{L}][\p{L}\s.'-]*$/u.test(name)||!/[\p{L}]/u.test(name)){
+      $("authError").textContent="Name can contain letters, spaces, apostrophes, periods, and hyphens only.";
+      return;
+    }
+  }
   if(!/^\d+$/.test(mobile)){
     $("authError").textContent="Mobile number must contain digits only.";
     return;
@@ -709,7 +737,7 @@ $("authForm").onsubmit=async e=>{
     }else{
       credential=await auth.createUserWithEmailAndPassword(phoneEmail(mobile),password);
     }
-    await ensureTrackerProfile(credential.user,mobile);
+    await ensureTrackerProfile(credential.user,mobile,name);
   }catch(error){
     showAuthError(error);
   }finally{
@@ -755,6 +783,9 @@ auth.onAuthStateChanged(async user=>{
   }
   await loadAdminConfig();
   if(isAdmin(user))$("adminButton").classList.add("visible");
+  const profileSnapshot=await db.collection(trackerCollection).doc(user.uid).get();
+  currentUserName=profileSnapshot.exists?profileSnapshot.data().name||"":"";
+  $("welcomeMessage").textContent=`Welcome${currentUserName?`, ${currentUserName}`:""}!`;
   const hasPendingSync=localStorage.getItem(KEY_PENDING_SYNC)==="true";
   if(!hasPendingSync){
     data={};
@@ -799,6 +830,7 @@ function save(){
       // Replace the complete data map so deleted dates are removed in Firestore.
       await db.collection(trackerCollection).doc(user.uid).set({
         uid:user.uid,
+        name:currentUserName,
         mobile:(user.email||"").split("@")[0],
         data:snapshot,
         quarterTargets:targets,

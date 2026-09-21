@@ -90,7 +90,7 @@ body.dark-mode .view-toggle button{background:#2d3748;color:#e0e7ff;border-color
 body.dark-mode .dow{color:#94a3b8}
 .day{min-height:76px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;padding:8px;cursor:pointer;position:relative;transition:all 0.2s;display:flex;flex-direction:column}
 body.dark-mode .day{background:#2d3748;border-color:#4a5568}
-.day:hover{border-color:#0066cc;box-shadow:0 4px 12px rgba(0,102,204,0.1)}
+.day:hover,.day:focus-visible{border-color:#0066cc;box-shadow:0 4px 12px rgba(0,102,204,0.1);outline:2px solid rgba(0,102,204,.35);outline-offset:2px}
 .day.empty{border:0;background:transparent;cursor:default}
 .day.empty:hover{border:0}
 .day.office{background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border-color:#0066cc;box-shadow:0 2px 8px rgba(0,102,204,0.15)}
@@ -134,6 +134,10 @@ body.dark-mode .modal-buttons .cancel{background:#4a5568;color:#e0e7ff}
 .modal-buttons .cancel:hover{background:#cbd5e1;transform:translateY(-2px)}
 body.dark-mode .modal-buttons .cancel:hover{background:#718096}
 #fileInput{display:none}
+.save-status{font-size:12px;font-weight:600;color:#64748b;min-height:18px;margin-top:6px}
+body.dark-mode .save-status{color:#94a3b8}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#172033;color:white;padding:11px 16px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:1200;transition:opacity .2s,transform .2s;font-size:13px}
+.toast.visible{opacity:1;transform:translate(-50%,0)}
 .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden;background:radial-gradient(circle at 15% 20%,rgba(0,185,255,.18),transparent 32%),radial-gradient(circle at 85% 80%,rgba(99,102,241,.2),transparent 34%)}
 .auth-screen::before,.auth-screen::after{content:"";position:absolute;border:1px solid rgba(96,165,250,.18);border-radius:50%;pointer-events:none}
 .auth-screen::before{width:520px;height:520px;top:-260px;right:-160px;box-shadow:0 0 80px rgba(0,185,255,.12)}
@@ -193,6 +197,17 @@ body.dark-mode .admin-search{background:#2d3748;color:#e0e7ff;border-color:#4a55
 body.dark-mode .admin-table th{color:#94a3b8;border-bottom-color:#4a5568}
 body.dark-mode .admin-table td{color:#e0e7ff;border-bottom-color:#4a5568}
 .admin-empty{padding:24px;text-align:center;color:#64748b}
+.admin-date-details{display:none;margin-top:18px;padding:18px;border-radius:14px;background:#f8fafc;border:1px solid #dbeafe}
+.admin-date-details.visible{display:block}
+.admin-date-details h3{margin:0 0 6px;color:#1e3a8a;font-size:17px}
+.admin-date-details p{margin:0 0 14px;color:#64748b;font-size:13px}
+.admin-date-list{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.admin-date-list li{padding:7px 10px;border-radius:8px;background:white;border:1px solid #bfdbfe;color:#1e40af;font-size:12px;font-weight:700}
+.admin-view-dates{border:0;border-radius:7px;padding:7px 9px;background:#7c3aed;color:white;font-size:11px;font-weight:700;cursor:pointer}
+body.dark-mode .admin-date-details{background:#2d3748;border-color:#4a5568}
+body.dark-mode .admin-date-details h3{color:#c4b5fd}
+body.dark-mode .admin-date-details p{color:#cbd5e1}
+body.dark-mode .admin-date-list li{background:#1a2332;border-color:#4a5568;color:#bfdbfe}
 /* Colorful, full-page admin dashboard */
 .admin-screen{padding:32px;background:radial-gradient(circle at 8% 12%,rgba(14,165,233,.28),transparent 28%),radial-gradient(circle at 92% 8%,rgba(168,85,247,.28),transparent 30%),linear-gradient(135deg,#eef2ff,#ecfeff 52%,#fdf2f8)}
 .admin-panel{max-width:1500px}
@@ -369,6 +384,7 @@ html,body{overflow-x:hidden}
         <h1>Office Days Tracker</h1>
         <p>Powered by KCB</p>
         <div class="welcome-message" id="welcomeMessage" aria-live="polite"></div>
+        <div class="save-status" id="saveStatus" aria-live="polite"></div>
       </div>
     </div>
     <div class="controls">
@@ -431,6 +447,7 @@ html,body{overflow-x:hidden}
     <div class="grid" id="calendar"></div>
     <div class="note">💡 Tap/click a date to mark or unmark an office day. Weekends are shown separately but can still be selected.</div>
     <div class="actions">
+      <button id="undo" style="display:none">Undo</button>
       <button id="clearQuarter">Clear Quarter</button>
       <button id="export">Export Data</button>
       <button id="import">Import Data</button>
@@ -446,9 +463,14 @@ html,body{overflow-x:hidden}
       <button class="admin-close" id="closeAdmin">Back to tracker</button>
     </div>
     <div class="admin-table-card">
-      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by name or mobile number" aria-label="Search users by name or mobile number"><button class="admin-export" id="exportAdminSelected">Export selected users</button><button class="admin-export" id="exportAdminAll">Export full dashboard</button></div></div>
-      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Name</th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th></tr></thead><tbody id="adminRows"></tbody></table>
+      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by name or mobile number" aria-label="Search users by name or mobile number"><button class="admin-export" id="selectAllAdmin">Select visible</button><button class="admin-export" id="clearAdminSelection">Clear selection</button><button class="admin-export" id="exportAdminSelected">Export selected users</button><button class="admin-export" id="exportAdminAll">Export full dashboard</button></div></div>
+      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Name</th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th><th>Dates</th></tr></thead><tbody id="adminRows"></tbody></table>
       <div class="admin-empty" id="adminEmpty" style="display:none">No matching users found.</div>
+      <section class="admin-date-details" id="adminDateDetails" aria-live="polite">
+        <h3 id="adminDateTitle">Selected user dates</h3>
+        <p id="adminDateSummary"></p>
+        <ul class="admin-date-list" id="adminDateList"></ul>
+      </section>
     </div>
   </div>
 </div>
@@ -473,7 +495,8 @@ html,body{overflow-x:hidden}
 </div>
 
 <input type="file" id="fileInput" accept=".json">
-<div class="build-watermark">Build v26.9.14</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="build-watermark">Build v26.9.21</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -505,6 +528,37 @@ let isQuarterView=false;
 const $=id=>document.getElementById(id);
 let pendingAction=null;
 let editingTarget=false;
+let previousData=null;
+let toastTimer=null;
+let selectedAdminDateMobile="";
+const selectedAdminMobiles=new Set();
+
+function rememberData(){
+  previousData={...data};
+  $("undo").style.display="inline-block";
+}
+
+function undoLastChange(){
+  if(!previousData)return;
+  data=previousData;
+  previousData=null;
+  $("undo").style.display="none";
+  save();
+  render();
+  showToast("Last change undone");
+}
+
+function showToast(message){
+  const toast=$("toast");
+  toast.textContent=message;
+  toast.classList.add("visible");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove("visible"),2600);
+}
+
+function setSaveStatus(message){
+  $("saveStatus").textContent=message;
+}
 
 function setAuthMode(mode){
   authMode=mode;
@@ -560,6 +614,10 @@ async function loadAdminConfig(){
   }
 }
 
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[character]));
+}
+
 function formatAdminDate(value){
   if(!value)return "—";
   const date=value.toDate?value.toDate():new Date(value);
@@ -584,8 +642,23 @@ function renderAdminRows(){
   $("adminActivityTitle").textContent=`${adminYear} User In Office Details`;
   const search=$("adminSearch").value.trim().toLowerCase();
   const rows=adminRows.filter(row=>`${row.name} ${row.mobile}`.toLowerCase().includes(search));
-  $("adminRows").innerHTML=rows.map(row=>`<tr><td class="admin-select-cell"><input class="admin-select" type="checkbox" data-mobile="${row.mobile}" aria-label="Select ${row.mobile} for export"></td><td class="admin-user">${row.name||"—"}</td><td class="admin-user">${row.mobile}</td><td class="admin-marked">${row.yearDays}</td>${adminCell(row.targets[0],row.quarters[0])}${adminCell(row.targets[1],row.quarters[1])}${adminCell(row.targets[2],row.quarters[2])}${adminCell(row.targets[3],row.quarters[3])}<td>${formatAdminDate(row.updatedAt)}</td></tr>`).join("");
+  $("adminRows").innerHTML=rows.map(row=>`<tr><td class="admin-select-cell"><input class="admin-select" type="checkbox" data-mobile="${escapeHtml(row.mobile)}" aria-label="Select ${escapeHtml(row.name||row.mobile)} for export" ${selectedAdminMobiles.has(row.mobile)?"checked":""}></td><td class="admin-user">${escapeHtml(row.name||"—")}</td><td class="admin-user">${escapeHtml(row.mobile)}</td><td class="admin-marked">${row.yearDays}</td>${adminCell(row.targets[0],row.quarters[0])}${adminCell(row.targets[1],row.quarters[1])}${adminCell(row.targets[2],row.quarters[2])}${adminCell(row.targets[3],row.quarters[3])}<td>${escapeHtml(formatAdminDate(row.updatedAt))}</td><td><button class="admin-view-dates" data-view-mobile="${escapeHtml(row.mobile)}">View dates</button></td></tr>`).join("");
   $("adminEmpty").style.display=rows.length?"none":"block";
+}
+
+function renderAdminDateDetails(row){
+  const details=$("adminDateDetails");
+  if(!row){
+    details.classList.remove("visible");
+    return;
+  }
+  selectedAdminDateMobile=row.mobile;
+  $("adminDateTitle").textContent=`${row.name||row.mobile} — ${adminYear} office dates`;
+  $("adminDateSummary").textContent=`${row.dates.length} office day${row.dates.length===1?"":"s"} marked in ${adminYear}`;
+  $("adminDateList").innerHTML=row.dates.length
+    ? row.dates.map(date=>`<li>${escapeHtml(new Date(`${date}T00:00:00`).toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"short",day:"numeric"}))}</li>`).join("")
+    : "<li>No office dates marked</li>";
+  details.classList.add("visible");
 }
 
 function csvValue(value){
@@ -615,8 +688,6 @@ function exportAdminCsv(rows,filename){
   URL.revokeObjectURL(link.href);
 }
 
-const selectedAdminMobiles=new Set();
-
 function exportSelectedAdminUsers(){
   const rows=adminRows.filter(row=>selectedAdminMobiles.has(row.mobile));
   if(!rows.length){
@@ -635,9 +706,12 @@ async function loadAdminDashboard(){
     const legacyTarget=Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0?saved.quarterTarget:24;
     const targets=[1,2,3,4].map(q=>Number.isInteger(savedTargets[`${adminYear}-Q${q}`])&&savedTargets[`${adminYear}-Q${q}`]>0?savedTargets[`${adminYear}-Q${q}`]:legacyTarget);
     const yearDays=Object.keys(savedData).filter(date=>savedData[date]&&date.startsWith(`${adminYear}-`)).length;
-    return {name:saved.name||"",mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,targets,quarters:[1,2,3,4].map(q=>adminQuarterStats(savedData,adminYear,q)),updatedAt:saved.updatedAt};
+    return {name:saved.name||"",mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,dates:Object.keys(savedData).filter(date=>savedData[date]&&date.startsWith(`${adminYear}-`)).sort(),targets,quarters:[1,2,3,4].map(q=>adminQuarterStats(savedData,adminYear,q)),updatedAt:saved.updatedAt};
   }).sort((a,b)=>a.mobile.localeCompare(b.mobile));
   renderAdminRows();
+  if(selectedAdminDateMobile){
+    renderAdminDateDetails(adminRows.find(row=>row.mobile===selectedAdminDateMobile));
+  }
 }
 
 function populateAdminYears(){
@@ -661,6 +735,7 @@ function showAdminDashboard(){
   loadAdminDashboard().catch(error=>{
     console.error("Unable to load admin dashboard:",error);
     $("adminRows").innerHTML="";
+    renderAdminDateDetails(null);
     $("adminEmpty").textContent="Unable to load user data. Check your Firestore rules.";
     $("adminEmpty").style.display="block";
   });
@@ -747,13 +822,29 @@ $("authForm").onsubmit=async e=>{
 };
 
 $("logout").onclick=()=>auth.signOut();
+$("undo").onclick=undoLastChange;
 $("adminButton").onclick=showAdminDashboard;
 $("exportAdminSelected").onclick=exportSelectedAdminUsers;
+$("selectAllAdmin").onclick=()=>{
+  const search=$("adminSearch").value.trim().toLowerCase();
+  adminRows.filter(row=>`${row.name} ${row.mobile}`.toLowerCase().includes(search)).forEach(row=>selectedAdminMobiles.add(row.mobile));
+  renderAdminRows();
+};
+$("clearAdminSelection").onclick=()=>{
+  selectedAdminMobiles.clear();
+  renderAdminRows();
+};
 $("adminRows").onclick=e=>{
-  if(!e.target.classList.contains("admin-select"))return;
-  const mobile=e.target.dataset.mobile;
-  if(e.target.checked)selectedAdminMobiles.add(mobile);
-  else selectedAdminMobiles.delete(mobile);
+  if(e.target.classList.contains("admin-select")){
+    const mobile=e.target.dataset.mobile;
+    if(e.target.checked)selectedAdminMobiles.add(mobile);
+    else selectedAdminMobiles.delete(mobile);
+    return;
+  }
+  if(e.target.classList.contains("admin-view-dates")){
+    const row=adminRows.find(item=>item.mobile===e.target.dataset.viewMobile);
+    renderAdminDateDetails(row);
+  }
 };
 $("closeAdmin").onclick=hideAdminDashboard;
 $("adminSearch").oninput=renderAdminRows;
@@ -816,6 +907,7 @@ function targetKey(year,q){return `${year}-Q${q}`}
 function getQuarterTarget(year,q){return Number.isInteger(quarterTargets[targetKey(year,q)])&&quarterTargets[targetKey(year,q)]>0?quarterTargets[targetKey(year,q)]:24}
 function save(){
   localStorage.setItem(KEY_DATA,JSON.stringify(data));
+  setSaveStatus(auth.currentUser?"Saving…":"Saved locally");
   localStorage.setItem(KEY_TARGET,JSON.stringify(quarterTargets));
   localStorage.setItem(KEY_PENDING_SYNC,"true");
 
@@ -839,8 +931,11 @@ function save(){
       });
       if(JSON.stringify(snapshot)===JSON.stringify(data)&&JSON.stringify(targets)===JSON.stringify(quarterTargets)){
         localStorage.removeItem(KEY_PENDING_SYNC);
+        setSaveStatus("Saved");
       }
     }catch(error){
+      setSaveStatus("Sync failed — changes kept locally");
+      showToast("Unable to sync changes. They will be retried later.");
       console.error("Unable to save tracker data to Firebase:",error);
     }
   });
@@ -849,6 +944,10 @@ function save(){
 function saveTarget(){
   save();
 }
+window.addEventListener("online",()=>{
+  if(auth.currentUser&&localStorage.getItem(KEY_PENDING_SYNC)==="true")save();
+});
+
 function saveTheme(){localStorage.setItem(KEY_THEME,isDarkMode?"dark":"light");}
 function saveMonthlyState(){localStorage.setItem(KEY_MONTHLY_STATE,isMonthlyExpanded?"true":"false");}
 function key(d){
@@ -942,17 +1041,29 @@ function renderCalendar(){
   for(let d=new Date(startDate);d<=endDate;d.setDate(d.getDate()+1)){
     let k=key(d), e=document.createElement("div");
     e.className="day"+(d.getDay()==0||d.getDay()==6?" weekend ":"")+(data[k]?" office ":"")+(key(d)==key(new Date())?" today":"");
+    e.tabIndex=0;
+    e.setAttribute("role","button");
+    e.setAttribute("aria-pressed",data[k]?"true":"false");
+    e.setAttribute("aria-label",`${d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"})}${data[k]?", office day":""}`);
     e.innerHTML='<div class="num">'+d.getDate()+'</div>'+(data[k]?'<div class="tag">OFFICE</div>':'');
-    e.onclick=()=>{
+    const toggleDay=()=>{
       const dateStr=d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
       const isMarked=!!data[k];
       const action=isMarked?"Mark as non-office day":"Mark as office day";
       showModal("Confirm Date Selection",`${action}?`,()=>{
+        rememberData();
         data[k]=!data[k];
         if(!data[k])delete data[k];
         save();
         render();
       });
+    };
+    e.onclick=toggleDay;
+    e.onkeydown=event=>{
+      if(event.key==="Enter"||event.key===" "){
+        event.preventDefault();
+        toggleDay();
+      }
     };
     cal.appendChild(e);
   }
@@ -1034,8 +1145,10 @@ $("targetCard").onclick=()=>{
 $("clearQuarter").onclick=()=>{
   showModal("Clear Quarter","Are you sure you want to clear all selected office days in this quarter?",()=>{
     const y=view.getFullYear(),q=quarter(view.getMonth()),[a,b]=quarterRange(y,q);
+    rememberData();
     for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1))delete data[key(d)];
     save();render();
+    showToast("Quarter cleared");
   });
 };
 
@@ -1060,13 +1173,26 @@ $("fileInput").onchange=(e)=>{
       }
       const importData=imported.data||imported;
       const importTarget=imported.quarterTarget||24;
-      showModal("Import Data","This will replace all your current data. Do you want to continue?",()=>{
-        data=importData;
+      const isValidDateKey=date=>{
+        const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+        if(!match)return false;
+        const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]);
+        const parsed=new Date(year,month-1,day);
+        return parsed.getFullYear()===year&&parsed.getMonth()===month-1&&parsed.getDate()===day;
+      };
+      const validDates=Object.keys(importData).filter(date=>isValidDateKey(date)&&importData[date]);
+      if(typeof importData!=="object"||Array.isArray(importData)||validDates.length!==Object.keys(importData).length){
+        alert("Invalid file format. Dates must use YYYY-MM-DD format.");
+        return;
+      }
+      showModal("Import Data",`This will replace your current data with ${validDates.length} selected day(s). Continue?`,()=>{
+        rememberData();
+        data=Object.fromEntries(validDates.map(date=>[date,true]));
         quarterTargets=imported.quarterTargets||{};
         if(imported.quarterTarget)quarterTargets[targetKey(view.getFullYear(),quarter(view.getMonth()))]=importTarget;
         save();
         render();
-        alert("Data imported successfully!");
+        showToast(`Imported ${validDates.length} selected day(s)`);
       });
     }catch(err){
       alert("Error reading file. Please make sure it's a valid JSON file.");

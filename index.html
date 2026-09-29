@@ -234,7 +234,8 @@ body.dark-mode .admin-date-list li{background:#1a2332;border-color:#4a5568;color
 @media(max-width:400px){.admin-metrics{grid-template-columns:1fr}.admin-topbar h2{font-size:21px}}
 /* Firebase restores the session asynchronously; avoid showing the login form during that check. */
 #authScreen{display:none}
-.whatsapp-widget{position:fixed;bottom:30px;right:30px;z-index:999;animation:bounce 2s infinite}
+.whatsapp-widget{--widget-bottom:20px;position:fixed;bottom:var(--widget-bottom);right:30px;z-index:999;animation:bounce 2s infinite;transition:bottom .25s ease}
+.whatsapp-widget.at-page-bottom{bottom:calc(var(--widget-bottom) + 90px)}
 .whatsapp-button{display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:#25D366;border-radius:50%;box-shadow:0 8px 24px rgba(37,211,102,0.4);cursor:pointer;transition:all 0.3s;text-decoration:none;font-size:32px;border:none}
 .whatsapp-button:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,0.6)}
 .whatsapp-tooltip{position:absolute;bottom:80px;right:0;background:white;padding:12px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);white-space:nowrap;font-size:13px;color:#0f172a;font-weight:500;opacity:0;transform:translateY(10px) translateX(10px);transition:all 0.3s;pointer-events:none;max-width:220px;text-align:center}
@@ -264,8 +265,9 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .note{font-size:12px;padding:10px;margin-top:12px}
   .actions{gap:8px}
   .actions button{padding:9px 14px;font-size:12px}
+  .actions .account-delete-icon{flex:0 0 38px;min-width:38px;width:38px;height:38px;padding:8px!important}
   .whatsapp-button{width:56px;height:56px;font-size:28px}
-  .whatsapp-widget{bottom:20px;right:20px}
+  .whatsapp-widget{--widget-bottom:20px;right:20px}
   .view-toggle{gap:4px}
   .view-toggle button{padding:6px 10px;font-size:11px}
   .monthly-grid{grid-template-columns:repeat(2,1fr)}
@@ -316,7 +318,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .modal-buttons{flex-wrap:wrap}
   .modal-buttons button{flex:1;min-width:100px}
   .whatsapp-button{width:52px;height:52px;font-size:26px}
-  .whatsapp-widget{bottom:16px;right:16px}
+  .whatsapp-widget{--widget-bottom:20px;right:16px}
   .whatsapp-tooltip{font-size:12px;padding:10px 12px;bottom:70px;max-width:180px}
   .monthly-grid{grid-template-columns:repeat(2,1fr)}
   .monthly-header{gap:6px}
@@ -354,7 +356,7 @@ html,body{overflow-x:hidden}
   .modal-content{max-width:95vw;padding:16px}
   .modal-content h2{font-size:16px}
   .whatsapp-button{width:48px;height:48px;font-size:24px}
-  .whatsapp-widget{bottom:12px;right:12px}
+  .whatsapp-widget{--widget-bottom:20px;right:12px}
   .monthly-grid{grid-template-columns:1fr}
   .monthly-stats{margin-top:12px;padding-top:12px}
   .monthly-header{gap:4px}
@@ -406,7 +408,6 @@ html,body{overflow-x:hidden}
       <button id="next">Year ›</button>
       <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
       <button id="adminButton" class="admin-button" title="Open admin dashboard">Admin Dashboard</button>
-      <button class="account-delete-icon" id="deleteAccountButton" type="button" title="Delete account" aria-label="Delete my account">🗑</button>
       <button id="logout" title="Sign out">Logout</button>
     </div>
   </div>
@@ -465,6 +466,7 @@ html,body{overflow-x:hidden}
       <button id="clearQuarter">Clear Quarter</button>
       <button id="export">Export Data</button>
       <button id="import">Import Data</button>
+      <button class="account-delete-icon" id="deleteAccountButton" type="button" title="Delete account" aria-label="Delete my account">🗑</button>
     </div>
   </div>
 </div>
@@ -1361,6 +1363,17 @@ $("fileInput").onchange=(e)=>{
   reader.readAsText(file);
   $("fileInput").value="";
 };
+
+const whatsappWidget=document.querySelector(".whatsapp-widget");
+function updateWhatsAppPosition(){
+  const page=document.documentElement;
+  const hasScrollablePage=page.scrollHeight>window.innerHeight+1;
+  const isAtBottom=window.scrollY+window.innerHeight>=page.scrollHeight-40;
+  whatsappWidget.classList.toggle("at-page-bottom",hasScrollablePage&&isAtBottom);
+}
+window.addEventListener("scroll",updateWhatsAppPosition,{passive:true});
+window.addEventListener("resize",updateWhatsAppPosition);
+updateWhatsAppPosition();
 
 document.addEventListener("keydown",(e)=>{
   if(e.key==="Escape"){

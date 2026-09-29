@@ -9,7 +9,7 @@
 body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#172033;min-height:100vh;transition:background 0.3s}
 body.dark-mode{background:linear-gradient(135deg,#0a0e27 0%,#1a1f35 100%)}
 .app{max-width:950px;margin:auto;padding:20px}
-.header{background:white;border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;transition:all 0.3s}
+.header{position:relative;background:white;border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;transition:all 0.3s}
 body.dark-mode .header{background:#1a2332;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
 body.dark-mode .header {color:#e0e7ff}
 .logo-section{display:flex;align-items:center;gap:16px}
@@ -20,6 +20,11 @@ body.dark-mode .title-group h1{color:#e0e7ff}
 .title-group p{font-size:13px;color:#64748b;margin:4px 0 0 0;transition:color 0.3s}
 .welcome-message{margin-top:8px;color:#0066cc;font-size:13px;font-weight:700}
 body.dark-mode .welcome-message{color:#60a5fa}
+.welcome-row{position:absolute;top:74px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:calc(100% - 40px)}
+.edit-name-button{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:0;border-radius:6px;background:transparent;color:#0066cc;font-size:14px;line-height:1;cursor:pointer;padding:0}
+.edit-name-button:hover{background:rgba(0,102,204,.1)}
+body.dark-mode .edit-name-button{color:#60a5fa}
+body.dark-mode .edit-name-button:hover{background:rgba(96,165,250,.15)}
 body.dark-mode .title-group p{color:#94a3b8}
 .controls{display:flex;gap:8px;align-items:center}
 .controls button,.controls select{padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;background:white;font-size:15px;cursor:pointer;font-weight:500;color:#0f172a;transition:all 0.2s}
@@ -133,6 +138,10 @@ body.dark-mode .modal-content input{background:#2d3748;color:#e0e7ff;border-colo
 body.dark-mode .modal-buttons .cancel{background:#4a5568;color:#e0e7ff}
 .modal-buttons .cancel:hover{background:#cbd5e1;transform:translateY(-2px)}
 body.dark-mode .modal-buttons .cancel:hover{background:#718096}
+.account-delete-icon{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #fecaca!important;border-radius:10px;background:#fff7f7!important;color:#dc2626!important;padding:8px!important;font-size:18px!important;line-height:1}
+.account-delete-icon:hover{background:#fee2e2!important;border-color:#f87171!important}
+body.dark-mode .account-delete-icon{background:rgba(127,29,29,.2)!important;border-color:rgba(248,113,113,.45)!important;color:#fca5a5!important}
+body.dark-mode .account-delete-icon:hover{background:rgba(127,29,29,.45)!important}
 #fileInput{display:none}
 .save-status{font-size:12px;font-weight:600;color:#64748b;min-height:18px;margin-top:6px}
 body.dark-mode .save-status{color:#94a3b8}
@@ -238,6 +247,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .header{padding:16px;gap:12px;justify-content:space-between}
   .logo{width:44px;height:44px;font-size:20px}
   .title-group h1{font-size:24px}
+  .welcome-row{position:static;transform:none;width:100%;max-width:none}
   .summary{gap:12px;margin:16px 0}
   .card{padding:14px}
   .value{font-size:28px}
@@ -282,6 +292,7 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .title-group p{font-size:12px}
   .controls{flex-direction:row;width:100%;justify-content:center;gap:6px;flex-wrap:wrap;order:3}
   .controls button,.controls select{flex:1;min-width:50px;padding:8px 10px;font-size:12px}
+  .controls .account-delete-icon{flex:0 0 38px;min-width:38px;width:38px;padding:8px!important;font-size:17px!important}
   .summary{grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
   .card{padding:12px;border-radius:10px}
   .value{font-size:24px}
@@ -349,6 +360,8 @@ html,body{overflow-x:hidden}
   .monthly-header{gap:4px}
   .monthly-toggle{width:16px;height:16px;font-size:10px}
 }
+
+
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -383,7 +396,7 @@ html,body{overflow-x:hidden}
       <div class="title-group">
         <h1>Office Days Tracker</h1>
         <p>Powered by KCB</p>
-        <div class="welcome-message" id="welcomeMessage" aria-live="polite"></div>
+        <div class="welcome-row"><div class="welcome-message" id="welcomeMessage" aria-live="polite"></div><button class="edit-name-button" id="editNameButton" type="button" aria-label="Edit name" title="Edit name">✎</button></div>
         <div class="save-status" id="saveStatus" aria-live="polite"></div>
       </div>
     </div>
@@ -393,6 +406,7 @@ html,body{overflow-x:hidden}
       <button id="next">Year ›</button>
       <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
       <button id="adminButton" class="admin-button" title="Open admin dashboard">Admin Dashboard</button>
+      <button class="account-delete-icon" id="deleteAccountButton" type="button" title="Delete account" aria-label="Delete my account">🗑</button>
       <button id="logout" title="Sign out">Logout</button>
     </div>
   </div>
@@ -482,6 +496,32 @@ html,body{overflow-x:hidden}
   <div class="whatsapp-tooltip">Looking for enhancements or suggestions? Text us on WhatsApp!</div>
 </div>
 
+<div class="modal" id="editNameModal" role="dialog" aria-modal="true" aria-labelledby="editNameTitle">
+  <div class="modal-content">
+    <h2 id="editNameTitle">Edit your name</h2>
+    <p>Update the name shown on your tracker profile.</p>
+    <input type="text" id="editNameInput" maxlength="80" autocomplete="name" aria-label="Name">
+    <p class="auth-error" id="editNameError" aria-live="polite"></p>
+    <div class="modal-buttons">
+      <button class="cancel" id="cancelNameEdit" type="button">Cancel</button>
+      <button class="confirm" id="saveNameEdit" type="button">Save name</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="deleteAccountModal" role="dialog" aria-modal="true" aria-labelledby="deleteAccountTitle">
+  <div class="modal-content">
+    <h2 id="deleteAccountTitle">Delete your account?</h2>
+    <p>This permanently deletes your account and tracker data. This action cannot be undone. Enter your password to confirm.</p>
+    <input type="password" id="deleteAccountPassword" autocomplete="current-password" placeholder="Your password" aria-label="Your password">
+    <p class="auth-error" id="deleteAccountError" aria-live="polite"></p>
+    <div class="modal-buttons">
+      <button class="cancel" id="cancelAccountDelete" type="button">Cancel</button>
+      <button class="danger-confirm" id="confirmAccountDelete" type="button">Delete account</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="confirmModal">
   <div class="modal-content">
     <h2 id="modalTitle">Confirm Action</h2>
@@ -496,7 +536,7 @@ html,body{overflow-x:hidden}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.9.21</div>
+<div class="build-watermark">Build v26.9.30</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -821,6 +861,126 @@ $("authForm").onsubmit=async e=>{
   }
 };
 
+function openNameEditor(){
+  $("editNameInput").value=currentUserName;
+  $("editNameError").textContent="";
+  $("editNameModal").classList.add("active");
+  $("editNameInput").focus();
+  $("editNameInput").select();
+}
+
+function closeNameEditor(){
+  $("editNameModal").classList.remove("active");
+}
+
+function openDeleteAccountDialog(){
+  $("deleteAccountPassword").value="";
+  $("deleteAccountError").textContent="";
+  $("deleteAccountModal").classList.add("active");
+  $("deleteAccountPassword").focus();
+}
+
+function closeDeleteAccountDialog(){
+  $("deleteAccountModal").classList.remove("active");
+  $("deleteAccountPassword").value="";
+  $("deleteAccountError").textContent="";
+}
+
+async function deleteCurrentAccount(){
+  const user=auth.currentUser;
+  const password=$("deleteAccountPassword").value;
+  const button=$("confirmAccountDelete");
+  const errorText=$("deleteAccountError");
+  errorText.textContent="";
+  if(!user){
+    errorText.textContent="Please sign in again before deleting your account.";
+    return;
+  }
+  if(!password){
+    errorText.textContent="Enter your password to confirm account deletion.";
+    return;
+  }
+  button.disabled=true;
+  button.textContent="Deleting…";
+  try{
+    await user.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(user.email,password));
+    await saveQueue;
+    await db.collection(trackerCollection).doc(user.uid).delete();
+    await user.delete();
+    localStorage.removeItem(KEY_DATA);
+    localStorage.removeItem(KEY_TARGET);
+    localStorage.removeItem(KEY_PENDING_SYNC);
+    closeDeleteAccountDialog();
+  }catch(error){
+    console.error("Unable to delete account:",error);
+    errorText.textContent=["auth/wrong-password","auth/invalid-credential","auth/invalid-login-credentials"].includes(error.code)
+      ? "The password is incorrect. Please try again."
+      : error.code==="auth/too-many-requests"
+        ? "Too many attempts. Please wait and try again."
+        : "Could not delete the account. Check your connection and try again.";
+  }finally{
+    button.disabled=false;
+    button.textContent="Delete account";
+  }
+}
+
+async function saveEditedName(){
+  const name=$("editNameInput").value.trim();
+  const saveButton=$("saveNameEdit");
+  $("editNameError").textContent="";
+  if(name.length<2||name.length>80){
+    $("editNameError").textContent="Name must be between 2 and 80 characters.";
+    return;
+  }
+  if(!/^[\p{L}][\p{L}\s.'-]*$/u.test(name)){
+    $("editNameError").textContent="Name can contain letters, spaces, apostrophes, periods, and hyphens only.";
+    return;
+  }
+  if(!auth.currentUser){
+    $("editNameError").textContent="Please sign in again to edit your name.";
+    return;
+  }
+  saveButton.disabled=true;
+  saveButton.textContent="Saving…";
+  try{
+    await db.collection(trackerCollection).doc(auth.currentUser.uid).set({
+      name,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    currentUserName=name;
+    $("welcomeMessage").textContent=`Welcome, ${name}!`;
+    closeNameEditor();
+    showToast("Name updated successfully");
+  }catch(error){
+    console.error("Unable to update profile name:",error);
+    $("editNameError").textContent="Could not save your name. Please try again.";
+  }finally{
+    saveButton.disabled=false;
+    saveButton.textContent="Save name";
+  }
+}
+
+$("editNameButton").onclick=openNameEditor;
+$("cancelNameEdit").onclick=closeNameEditor;
+$("saveNameEdit").onclick=saveEditedName;
+$("editNameInput").onkeydown=event=>{
+  if(event.key==="Enter"){
+    event.preventDefault();
+    saveEditedName();
+  }
+};
+$("editNameModal").onclick=event=>{
+  if(event.target===$("editNameModal"))closeNameEditor();
+};
+$("deleteAccountButton").onclick=openDeleteAccountDialog;
+$("cancelAccountDelete").onclick=closeDeleteAccountDialog;
+$("confirmAccountDelete").onclick=deleteCurrentAccount;
+$("deleteAccountPassword").onkeydown=event=>{
+  if(event.key==="Enter")deleteCurrentAccount();
+};
+$("deleteAccountModal").onclick=event=>{
+  if(event.target===$("deleteAccountModal"))closeDeleteAccountDialog();
+};
 $("logout").onclick=()=>auth.signOut();
 $("undo").onclick=undoLastChange;
 $("adminButton").onclick=showAdminDashboard;
@@ -1203,7 +1363,11 @@ $("fileInput").onchange=(e)=>{
 };
 
 document.addEventListener("keydown",(e)=>{
-  if(e.key==="Escape")closeModal();
+  if(e.key==="Escape"){
+    closeModal();
+    closeNameEditor();
+    closeDeleteAccountDialog();
+  }
   if(e.key==="Enter"&&editingTarget)confirmAction();
 });
 

@@ -1,7 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0f172a"/>
-  <rect x="102" y="112" width="308" height="290" rx="34" fill="#fff"/>
-  <path d="M102 156a44 44 0 0 1 44-44h220a44 44 0 0 1 44 44v40H102z" fill="#0066cc"/>
-  <path d="M178 88v76M334 88v76" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="24"/>
-  <path d="m182 285 48 48 104-110" fill="none" stroke="#10b981" stroke-linecap="round" stroke-linejoin="round" stroke-width="34"/>
+  <defs>
+    <linearGradient id="background" x1="48" y1="32" x2="464" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="check" x1="194" y1="274" x2="322" y2="374" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#background)"/>
+  <rect x="99" y="112" width="314" height="302" rx="38" fill="#fff"/>
+  <path d="M99 153a41 41 0 0 1 41-41h232a41 41 0 0 1 41 41v51H99z" fill="#dbeafe"/>
+  <path d="M176 91v68M336 91v68" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="24"/>
+  <path d="M153 235h38v38h-38zM237 235h38v38h-38zM321 235h38v38h-38zM153 303h38v38h-38z" fill="#bfdbfe" rx="9"/>
+  <path d="m229 318 42 42 89-96" fill="none" stroke="url(#check)" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
 </svg>

@@ -1,18 +1,170 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="512"
+  height="512"
+  viewBox="0 0 512 512"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Office Days Tracker</title>
+  <desc id="desc">VOD office days tracking application icon</desc>
+
   <defs>
-    <linearGradient id="background" x1="48" y1="32" x2="464" y2="480" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#ff9a1f"/>
-      <stop offset="1" stop-color="#e85d04"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF8A00"/>
+      <stop offset="100%" stop-color="#F56600"/>
     </linearGradient>
-    <linearGradient id="check" x1="194" y1="274" x2="322" y2="374" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#34d399"/>
-      <stop offset="1" stop-color="#059669"/>
+
+    <linearGradient id="techBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#18B6FF"/>
+      <stop offset="100%" stop-color="#1455D9"/>
     </linearGradient>
+
+    <filter id="shadow"
+            x="-30%"
+            y="-30%"
+            width="160%"
+            height="160%">
+      <feDropShadow
+        dx="0"
+        dy="6"
+        stdDeviation="7"
+        flood-color="#0B315D"
+        flood-opacity="0.22"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#background)"/>
-  <rect x="99" y="112" width="314" height="302" rx="38" fill="#fff"/>
-  <path d="M99 153a41 41 0 0 1 41-41h232a41 41 0 0 1 41 41v51H99z" fill="#dbeafe"/>
-  <path d="M176 91v68M336 91v68" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="24"/>
-  <path d="M153 235h38v38h-38zM237 235h38v38h-38zM321 235h38v38h-38zM153 303h38v38h-38z" fill="#bfdbfe" rx="9"/>
-  <path d="m229 318 42 42 89-96" fill="none" stroke="url(#check)" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"/>
+
+  <!-- App background -->
+  <rect
+    x="0"
+    y="0"
+    width="512"
+    height="512"
+    rx="96"
+    fill="url(#bg)"
+  />
+
+  <!-- ========================= -->
+  <!-- V - outer identity        -->
+  <!-- ========================= -->
+
+  <path
+    d="
+      M78 116
+      H139
+      L222 304
+      L305 116
+      H366
+      L252 380
+      H192
+      Z
+    "
+    fill="#FFFFFF"
+  />
+
+  <!-- ========================= -->
+  <!-- O - modern technology ring -->
+  <!-- ========================= -->
+
+  <circle
+    cx="305"
+    cy="257"
+    r="112"
+    fill="url(#techBlue)"
+    filter="url(#shadow)"
+  />
+
+  <!-- Inner O -->
+  <circle
+    cx="305"
+    cy="257"
+    r="79"
+    fill="#FF7900"
+  />
+
+  <!-- ========================= -->
+  <!-- D - Office Days            -->
+  <!-- ========================= -->
+
+  <path
+    d="
+      M270 205
+      H307
+      C345 205 370 226 370 257
+      C370 288 345 309 307 309
+      H270
+      Z
+
+      M297 229
+      V285
+      H306
+      C326 285 340 275 340 257
+      C340 239 326 229 306 229
+      Z
+    "
+    fill="#123A70"
+    fill-rule="evenodd"
+  />
+
+  <!-- ========================= -->
+  <!-- Calendar                   -->
+  <!-- ========================= -->
+
+  <g transform="translate(288 237)">
+
+    <!-- Calendar body -->
+    <rect
+      x="0"
+      y="8"
+      width="48"
+      height="47"
+      rx="7"
+      fill="#FFFFFF"
+    />
+
+    <!-- Calendar header -->
+    <rect
+      x="0"
+      y="8"
+      width="48"
+      height="13"
+      rx="7"
+      fill="#FFFFFF"
+    />
+
+    <!-- Binding rings -->
+    <rect
+      x="10"
+      y="2"
+      width="6"
+      height="14"
+      rx="3"
+      fill="#FFFFFF"
+    />
+
+    <rect
+      x="32"
+      y="2"
+      width="6"
+      height="14"
+      rx="3"
+      fill="#FFFFFF"
+    />
+
+    <!-- Check -->
+    <path
+      d="
+        M10 35
+        L19 44
+        L38 25
+      "
+      fill="none"
+      stroke="#123A70"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+  </g>
+
 </svg>

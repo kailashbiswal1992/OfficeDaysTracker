@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Office Days Tracker",
+  "short_name": "Office Tracker",
+  "description": "Track your office days by month, quarter, and year.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone"],
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

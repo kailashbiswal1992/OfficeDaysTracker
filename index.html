@@ -115,8 +115,9 @@ body.dark-mode .day.weekend{background:#2d3748;border-color:#4a5568;color:#71809
 body.dark-mode .day .num{color:#e0e7ff}
 .day.weekend .num{color:#9ca3af}
 body.dark-mode .day.weekend .num{color:#718096}
-.day .tag{font-size:10px;color:#0066cc;font-weight:700;background:#e0f2fe;padding:2px 6px;border-radius:4px;width:fit-content;margin-top:auto;transition:all 0.3s}
-body.dark-mode .day .tag{background:rgba(96,165,250,0.2)}
+.day .tag{display:flex;align-items:center;justify-content:center;width:20px;height:22px;color:#0066cc;background:#e0f2fe;padding:2px;border-radius:4px;margin-top:auto;transition:all 0.3s}
+.day .tag svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.dark-mode .day .tag{color:#60a5fa;background:rgba(96,165,250,0.2)}
 .note{margin-top:16px;font-size:13px;color:#64748b;padding:12px;background:#f8fafc;border-left:3px solid #0066cc;border-radius:6px;transition:all 0.3s}
 body.dark-mode .note{background:#2d3748;color:#cbd5e1;border-left-color:#60a5fa}
 .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
@@ -561,7 +562,7 @@ html,body{overflow-x:hidden}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.10.03.1</div>
+<div class="build-watermark">Build v26.10.03.2</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -1260,7 +1261,7 @@ function renderCalendar(){
     e.setAttribute("role","button");
     e.setAttribute("aria-pressed",data[k]?"true":"false");
     e.setAttribute("aria-label",`${d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"})}${data[k]?", office day":""}`);
-    e.innerHTML='<div class="num">'+d.getDate()+'</div>'+(data[k]?'<div class="tag">OFFICE</div>':'');
+    e.innerHTML='<div class="num">'+d.getDate()+'</div>'+(data[k]?'<div class="tag" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 21V5l8-3v19M12 9h8v12M2 21h20"/><path d="M7 7h2m-2 4h2m-2 4h2m7-3h2m-2 4h2"/></svg></div>':'');
     const toggleDay=()=>{
       const dateStr=d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
       const isMarked=!!data[k];

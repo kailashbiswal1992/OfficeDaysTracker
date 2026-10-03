@@ -1,4 +1,4 @@
-const CACHE_NAME = "office-days-tracker-shell-v3";
+const CACHE_NAME = "office-days-tracker-shell-v5";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./app-icon.svg", "./firebase-config.js"];
 
 self.addEventListener("install", event => {

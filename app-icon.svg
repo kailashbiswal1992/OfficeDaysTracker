@@ -28,4 +28,5 @@
     <path d="M17 5v15M46 5v15" stroke="#123a70" stroke-width="6" stroke-linecap="round"/>
     <path d="m18 47 10 9 19-20" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
+  <text x="256" y="448" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" letter-spacing="1.5">OFFICE DAYS TRACKER</text>
 </svg>

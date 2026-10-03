@@ -1,37 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
   <title id="title">Office Days Tracker</title>
-  <desc id="desc">A modern orange Voya-inspired icon with a V, O, D, and calendar check.</desc>
+  <desc id="desc">A layered VOD monogram with a calendar check on an orange rounded square.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FF941A"/>
-      <stop offset="100%" stop-color="#F56600"/>
+      <stop offset="0%" stop-color="#ff9700"/>
+      <stop offset="100%" stop-color="#f04400"/>
     </linearGradient>
     <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#21B8FF"/>
-      <stop offset="100%" stop-color="#1455D9"/>
+      <stop offset="0%" stop-color="#16b8ef"/>
+      <stop offset="100%" stop-color="#1651db"/>
     </linearGradient>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#7C2D12" flood-opacity=".25"/>
-    </filter>
   </defs>
 
-  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+  <rect x="0" y="0" width="512" height="512" rx="92" fill="url(#bg)"/>
 
-  <!-- V: bold, simple brand mark -->
-  <path d="M72 112h72l92 208 92-208h72L256 406h-40z" fill="#fff"/>
+  <!-- The V is the base monogram; the O and D layer over its right side. -->
+  <path d="M58 128h43c6 0 10 3 13 9l62 128 68-119c13-23 35-36 61-36h23L173 385z" fill="#fff"/>
+  <circle cx="337" cy="276" r="132" fill="url(#ring)"/>
+  <circle cx="337" cy="276" r="99" fill="#f87508"/>
 
-  <!-- O: blue ring nested within the V -->
-  <circle cx="294" cy="258" r="106" fill="url(#ring)" filter="url(#shadow)"/>
-  <circle cx="294" cy="258" r="77" fill="#F87508"/>
+  <path d="M276 202h62c51 0 81 28 81 75s-30 75-81 75h-62z" fill="#123a70"/>
 
-  <!-- D: strong letterform inside the O; the calendar sits in its counter -->
-  <path fill="#123A70" fill-rule="evenodd" d="M254 202h35c43 0 67 20 67 56s-24 56-67 56h-35zm27 24v64h8c24 0 39-11 39-32s-15-32-39-32z"/>
-
-  <!-- Small calendar/check detail -->
-  <g transform="translate(292 235)">
-    <rect x="0" y="7" width="36" height="39" rx="6" fill="#fff"/>
-    <path d="M0 13a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v5H0z" fill="#21A7F3"/>
-    <path d="M9 4v9M27 4v9" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-    <path d="m8 30 6 6 14-14" fill="none" stroke="#123A70" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Small calendar check stays simple and legible at app-icon size. -->
+  <g transform="translate(302 249)">
+    <rect x="0" y="9" width="63" height="62" rx="10" fill="#f8fafc"/>
+    <path d="M0 19a10 10 0 0 1 10-10h43a10 10 0 0 1 10 10v8H0z" fill="#dbeafe"/>
+    <path d="M17 5v15M46 5v15" stroke="#123a70" stroke-width="6" stroke-linecap="round"/>
+    <path d="m18 47 10 9 19-20" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>

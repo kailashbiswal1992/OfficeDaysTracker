@@ -287,6 +287,23 @@ body.dark-mode .whatsapp-tooltip{background:#1a2332;color:#e0e7ff}
   .monthly-grid{grid-template-columns:repeat(2,1fr)}
 }
 
+.office-location{margin-top:16px;padding:16px;border:1px solid #dbeafe;border-radius:12px;background:#f8fafc}
+.office-location h3{margin:0 0 6px;color:#0f172a;font-size:16px}
+.office-location p{margin:0 0 12px;color:#64748b;font-size:13px;line-height:1.5}
+.location-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;align-items:end}
+.location-fields label{display:grid;gap:5px;color:#475569;font-size:12px;font-weight:700}
+.location-fields input{width:100%;min-width:0;padding:9px 10px;border:1px solid #cbd5e1;border-radius:8px;background:white;color:#172033;font-size:14px}
+.location-fields button{border:0;border-radius:8px;padding:10px 12px;background:#0066cc;color:white;font-weight:700;cursor:pointer}
+.location-enable{display:flex;align-items:center;gap:8px;margin-top:12px;color:#334155;font-size:13px;font-weight:600}
+.location-enable input{width:17px;height:17px;accent-color:#0066cc}
+.location-status{margin-top:8px;color:#64748b;font-size:12px;line-height:1.5}
+body.dark-mode .office-location{background:#202c3d;border-color:#3b4c63}
+body.dark-mode .office-location h3,body.dark-mode .location-enable{color:#e0e7ff}
+body.dark-mode .office-location p,body.dark-mode .location-status{color:#cbd5e1}
+body.dark-mode .location-fields label{color:#cbd5e1}
+body.dark-mode .location-fields input{background:#2d3748;color:#e0e7ff;border-color:#4a5568}
+@media(max-width:600px){.location-fields{grid-template-columns:1fr 1fr}.location-fields button{grid-column:1/-1}}
+
 @media(max-width:600px){
   .app{padding:12px}
   .admin-button.visible{display:block!important;flex:1 1 100%;width:100%;min-width:0;order:5}
@@ -562,7 +579,7 @@ html,body{overflow-x:hidden}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.10.03.2</div>
+<div class="build-watermark">Build v26.10.05</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -584,6 +601,15 @@ const KEY_TARGET="officeDaysTrackerTarget";
 const KEY_THEME="officeDaysTrackerTheme";
 const KEY_MONTHLY_STATE="officeDaysTrackerMonthlyExpanded";
 const KEY_PENDING_SYNC="officeDaysTrackerPendingSync";
+const OFFICE_RADIUS_METERS=2000;
+const OFFICE_LOCATIONS=[
+  {name:"Bangalore",latitude:13.0450,longitude:77.6188},
+  {name:"Delhi",latitude:28.55189,longitude:77.32499},
+  {name:"Hyderabad",latitude:17.4411,longitude:78.3815},
+  {name:"Pune",latitude:18.5539,longitude:73.9425}
+];
+let officeLocationWatchId=null;
+let officeLocationRetryTimer=null;
 let data=JSON.parse(localStorage.getItem(KEY_DATA)||"{}");
 let quarterTargets=JSON.parse(localStorage.getItem(KEY_TARGET)||"{}");
 if(!quarterTargets||typeof quarterTargets!=="object"||Array.isArray(quarterTargets))quarterTargets={};
@@ -625,6 +651,65 @@ function showToast(message){
 function setSaveStatus(message){
   $("saveStatus").textContent=message;
 }
+
+function officeDistanceMeters(lat1,lon1,lat2,lon2){
+  const radians=value=>value*Math.PI/180;
+  const dLat=radians(lat2-lat1),dLon=radians(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(radians(lat1))*Math.cos(radians(lat2))*Math.sin(dLon/2)**2;
+  return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function checkOfficePosition(position){
+  if(!auth.currentUser)return;
+  const nearest=OFFICE_LOCATIONS.map(office=>({
+    ...office,
+    distance:officeDistanceMeters(
+      position.coords.latitude,position.coords.longitude,
+      office.latitude,office.longitude
+    )
+  })).sort((a,b)=>a.distance-b.distance)[0];
+  const today=key(new Date());
+  if(nearest.distance<=OFFICE_RADIUS_METERS&&!data[today]){
+    rememberData();
+    data[today]=true;
+    save();
+    render();
+    showToast(`Office day automatically marked near ${nearest.name}`);
+  }
+}
+
+function requestOfficeLocation(){
+  if(!auth.currentUser||!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(checkOfficePosition,error=>{
+    console.warn("Unable to get a fresh office location:",error.message);
+  },{enableHighAccuracy:true,timeout:60000,maximumAge:0});
+}
+
+function stopAutoOfficeMarking(){
+  if(officeLocationWatchId!==null&&navigator.geolocation){
+    navigator.geolocation.clearWatch(officeLocationWatchId);
+    officeLocationWatchId=null;
+  }
+  if(officeLocationRetryTimer!==null){
+    clearInterval(officeLocationRetryTimer);
+    officeLocationRetryTimer=null;
+  }
+}
+
+function startAutoOfficeMarking(){
+  stopAutoOfficeMarking();
+  if(!auth.currentUser||!navigator.geolocation)return;
+  officeLocationWatchId=navigator.geolocation.watchPosition(checkOfficePosition,error=>{
+    console.warn("Office location watch error:",error.message);
+  },{enableHighAccuracy:true,timeout:60000,maximumAge:0});
+  requestOfficeLocation();
+  officeLocationRetryTimer=setInterval(requestOfficeLocation,120000);
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden)requestOfficeLocation();
+});
+window.addEventListener("focus",requestOfficeLocation);
 
 function setAuthMode(mode){
   authMode=mode;
@@ -1080,7 +1165,10 @@ auth.onAuthStateChanged(async user=>{
   $("appContent").style.display=user?"block":"none";
   $("adminButton").classList.remove("visible");
   adminMobiles=[];
-  if(!user)return;
+  if(!user){
+    stopAutoOfficeMarking();
+    return;
+  }
   const signedInMobile=(user.email||"").split("@")[0];
   try{
     await ensureTrackerProfile(user,signedInMobile);
@@ -1112,6 +1200,7 @@ auth.onAuthStateChanged(async user=>{
     console.error("Unable to load tracker data from Firebase:",error);
   }
   render();
+  startAutoOfficeMarking();
   showInstallGuide(user);
 });
 

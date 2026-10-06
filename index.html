@@ -639,7 +639,7 @@ html,body{overflow-x:hidden}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.10.06</div>
+<div class="build-watermark">Build v26.10.06.02</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -647,8 +647,6 @@ const auth=firebase.auth();
 let authStateResolved=false;
 const db=firebase.firestore();
 const trackerCollection="officedaystracker";
-// Admin access is managed in Firestore at appConfig/admin.
-// Document format: { mobiles: ["9876543210"] }
 let adminMobiles=[];
 let superAdminMobiles=[];
 let adminRows=[];
@@ -662,7 +660,7 @@ const KEY_TARGET="officeDaysTrackerTarget";
 const KEY_THEME="officeDaysTrackerTheme";
 const KEY_MONTHLY_STATE="officeDaysTrackerMonthlyExpanded";
 const KEY_PENDING_SYNC="officeDaysTrackerPendingSync";
-const OFFICE_RADIUS_METERS=500;
+const OFFICE_RADIUS_METERS=250;
 const OFFICE_LOCATIONS=[
   {name:"Bangalore",latitude:13.0450,longitude:77.6188},
   {name:"Delhi",latitude:28.55189,longitude:77.32499},
@@ -736,7 +734,7 @@ function checkOfficePosition(position){
     data[today]=true;
     save();
     render();
-    showToast(`Office day automatically marked near ${nearest.name}`);
+    showToast(`Automatic Office Day marking as User is in ${nearest.name} Office Location`);
   }
 }
 

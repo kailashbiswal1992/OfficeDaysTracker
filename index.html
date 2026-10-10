@@ -249,22 +249,85 @@ body.dark-mode .admin-inline-dates strong{color:#c4b5fd}
 @media(max-width:768px){.admin-screen{padding:16px}.admin-metrics{grid-template-columns:repeat(2,1fr)}.admin-topbar{align-items:flex-start}.admin-table-header{align-items:stretch;flex-direction:column}.admin-search{min-width:0;width:100%}.admin-table-card{overflow-x:auto}.admin-table{min-width:760px;font-size:11px}.admin-table th,.admin-table td{padding:10px 7px}.admin-export-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px}.admin-export-actions .admin-search,.admin-export-actions .admin-export{width:100%;min-width:0}}
 @media(max-width:400px){.admin-metrics{grid-template-columns:1fr}.admin-topbar h2{font-size:21px}}
 /* Super-admin controls are separate from the read-only user dashboard. */
-.super-admin-card{margin:0 0 18px;padding:20px;border-radius:16px;background:#fff;border:1px solid #ddd6fe;box-shadow:0 10px 28px rgba(79,70,229,.12)}
+.super-admin-card{margin:0 0 18px;border-radius:16px;background:#fff;border:1px solid #ddd6fe;box-shadow:0 10px 28px rgba(79,70,229,.12);overflow:hidden}
 .super-admin-card[hidden]{display:none}
-.super-admin-card h3{margin:0 0 6px;color:#4c1d95}
-.super-admin-card p{margin:0 0 12px;color:#64748b;font-size:13px}
-.super-admin-form{display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+.super-admin-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;cursor:pointer;list-style:none;color:#4c1d95}
+.super-admin-summary::-webkit-details-marker{display:none}
+.super-admin-summary:focus-visible{outline:3px solid #8b5cf6;outline-offset:-3px}
+.super-admin-summary-copy{display:grid;gap:4px;min-width:0}
+.super-admin-summary-copy strong{font-size:15px}
+.super-admin-summary-copy small{color:#64748b;font-size:12px;line-height:1.4}
+.super-admin-chevron{flex:0 0 auto;font-size:20px;transition:transform .2s}
+.super-admin-card[open] .super-admin-chevron{transform:rotate(180deg)}
+.super-admin-content{padding:0 20px 20px;border-top:1px solid #ede9fe}
+.super-admin-content p{margin:12px 0;color:#64748b;font-size:13px}
+.super-admin-form{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px}
 .super-admin-form label{display:grid;gap:5px;color:#475569;font-size:12px;font-weight:700}
-.super-admin-form input{padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px}
-.super-admin-form button,.admin-remove-button{border:0;border-radius:8px;padding:10px 13px;background:#6d28d9;color:#fff;font-weight:700;cursor:pointer}
-.super-admin-list{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:10px 0 0}
-.super-admin-list li{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 11px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:9px;color:#4c1d95;font-size:13px;font-weight:700}
-.admin-remove-button{padding:5px 8px;background:#dc2626;font-size:11px}
+.super-admin-form input{width:100%;min-width:0;padding:11px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px}
+.super-admin-form button,.admin-remove-button{min-height:42px;border:0;border-radius:8px;padding:10px 14px;background:#6d28d9;color:#fff;font-weight:700;cursor:pointer}
+.super-admin-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px;list-style:none;padding:0;margin:12px 0 0}
+.super-admin-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:8px 9px 8px 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:9px;color:#4c1d95;font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.super-admin-admin-identity{display:grid;gap:3px;min-width:0}
+.super-admin-admin-identity small{color:#64748b;font-size:11px;font-weight:500}
+.admin-remove-button{min-height:34px;flex:0 0 auto;padding:7px 10px;background:#dc2626;font-size:11px}
 .super-admin-status{min-height:16px;margin:8px 0 0!important;color:#475569}
 body.dark-mode .super-admin-card{background:#1a2332;border-color:#4a5568}
-body.dark-mode .super-admin-card h3,body.dark-mode .super-admin-list li{color:#c4b5fd}
-body.dark-mode .super-admin-card p,body.dark-mode .super-admin-form label{color:#cbd5e1}
-body.dark-mode .super-admin-list li{background:#2d3748;border-color:#4a5568}
+body.dark-mode .super-admin-summary{color:#c4b5fd}
+body.dark-mode .super-admin-summary-copy small,body.dark-mode .super-admin-content p,body.dark-mode .super-admin-form label{color:#cbd5e1}
+body.dark-mode .super-admin-content{border-top-color:#4a5568}
+body.dark-mode .super-admin-list li{color:#c4b5fd;background:#2d3748;border-color:#4a5568}
+body.dark-mode .super-admin-admin-identity small{color:#cbd5e1}
+.admin-dashboard-content{padding:0 20px 20px}
+.super-admin-overview-content{padding:18px 20px 20px;border-top:1px solid #ede9fe}
+.super-admin-overview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.super-admin-overview-toolbar label{display:grid;gap:4px;color:#475569;font-size:12px;font-weight:700}
+.super-admin-overview-toolbar select{padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:inherit}
+.super-admin-user-count{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.super-admin-stat{display:grid;gap:7px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#eef2ff,#f5f3ff)}
+.super-admin-stat span{color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.super-admin-stat strong{color:#4c1d95;font-size:27px;line-height:1}
+.super-admin-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.super-admin-chart-card{min-width:0;padding:16px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}
+.super-admin-chart-card h3{margin:0 0 4px;color:#0f172a;font-size:16px}
+.super-admin-chart-card p{margin:0 0 12px;color:#64748b;font-size:12px}
+.super-admin-chart{display:block;width:100%;height:auto;overflow:visible}
+.super-admin-chart text{fill:#64748b;font:11px 'Segoe UI',Roboto,Arial,sans-serif}
+.super-admin-chart .chart-grid{stroke:#e2e8f0;stroke-width:1}
+.super-admin-chart .chart-line{fill:none;stroke:#7c3aed;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.super-admin-chart .chart-area{fill:url(#adminChartFill)}
+.super-admin-chart-card.registration-chart .chart-line{stroke:#0891b2}
+.super-admin-chart-card.registration-chart .chart-area{fill:url(#registrationChartFill)}
+.super-admin-health{margin-top:14px}
+.super-admin-health h3,.super-admin-audit h3{margin:0 0 10px;color:#0f172a;font-size:15px}
+.super-admin-health-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.super-admin-health-item{padding:12px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}
+.super-admin-health-item span{display:block;color:#64748b;font-size:11px;font-weight:700}
+.super-admin-health-item strong{display:block;margin-top:5px;color:#0f172a;font-size:22px}
+.super-admin-audit{margin-top:14px;padding:15px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}
+.super-admin-audit-list{display:grid;gap:7px;list-style:none;padding:0;margin:0}
+.super-admin-audit-list li{display:flex;justify-content:space-between;gap:10px;padding:9px 11px;border-radius:8px;background:#f8fafc;color:#334155;font-size:12px}
+.super-admin-audit-list time{flex:0 0 auto;color:#64748b}
+body.dark-mode .super-admin-overview-content{border-top-color:#4a5568}
+body.dark-mode .super-admin-user-count{background:linear-gradient(135deg,#26364d,#312e4f)}
+body.dark-mode .super-admin-user-count span,body.dark-mode .super-admin-chart-card p{color:#cbd5e1}
+body.dark-mode .super-admin-user-count strong,body.dark-mode .super-admin-chart-card h3{color:#e0e7ff}
+body.dark-mode .super-admin-chart-card{background:#202c3d;border-color:#4a5568}
+body.dark-mode .super-admin-chart text{fill:#cbd5e1}
+body.dark-mode .super-admin-chart .chart-grid{stroke:#4a5568}
+.admin-dashboard-module.regular-admin{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.admin-dashboard-module.regular-admin>summary{display:none}
+.admin-dashboard-module.regular-admin .admin-dashboard-content{padding:0}
+@media(max-width:600px){
+  .super-admin-summary{padding:14px}
+  .super-admin-summary-copy strong{font-size:14px}
+  .super-admin-content{padding:0 14px 14px}
+  .super-admin-overview-content{padding:14px}
+  .super-admin-user-count{align-items:flex-start;flex-direction:column;gap:8px}
+  .super-admin-chart-card{padding:12px}
+  .super-admin-form{grid-template-columns:1fr}
+  .super-admin-form button{width:100%}
+  .super-admin-list{grid-template-columns:1fr}
+}
 
 /* Firebase restores the session asynchronously; avoid showing the login form during that check. */
 #authScreen{display:none}
@@ -449,6 +512,30 @@ html,body{overflow-x:hidden}
   body.dark-mode .admin-table tbody tr:hover{background:#1a2332}
 }
 
+.super-admin-divider{height:1px;margin:18px 0;background:#ede9fe}
+body.dark-mode .super-admin-overview-toolbar label{color:#cbd5e1}
+body.dark-mode .super-admin-overview-toolbar select{background:#2d3748;border-color:#4a5568;color:#e0e7ff}
+body.dark-mode .super-admin-stat{background:linear-gradient(135deg,#26364d,#312e4f)}
+body.dark-mode .super-admin-stat span,body.dark-mode .super-admin-health-item span{color:#cbd5e1}
+body.dark-mode .super-admin-stat strong,body.dark-mode .super-admin-health-item strong,body.dark-mode .super-admin-health h3,body.dark-mode .super-admin-audit h3{color:#e0e7ff}
+body.dark-mode .super-admin-health-item,body.dark-mode .super-admin-audit{background:#202c3d;border-color:#4a5568}
+body.dark-mode .super-admin-audit-list li{background:#2d3748;color:#e0e7ff}
+body.dark-mode .super-admin-audit-list time{color:#cbd5e1}
+body.dark-mode .super-admin-divider{background:#4a5568}
+.super-admin-user-count{padding:0;background:none;border-radius:0}
+body.dark-mode .super-admin-user-count{background:none}
+.admin-remove-button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:700px){
+  .super-admin-chart-grid{grid-template-columns:1fr}
+  .super-admin-health-grid{grid-template-columns:1fr}
+  .super-admin-user-count{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){
+  .super-admin-overview-toolbar{align-items:stretch;flex-direction:column}
+  .super-admin-overview-toolbar select{width:100%}
+  .super-admin-user-count{grid-template-columns:1fr}
+  .super-admin-audit-list li{flex-direction:column;gap:4px}
+}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -563,22 +650,97 @@ html,body{overflow-x:hidden}
       <div><h2>Admin Dashboard</h2><p>Read-only overview of all Office Days Tracker users</p></div>
       <button class="admin-close" id="closeAdmin">Back to tracker</button>
     </div>
-    <section class="super-admin-card" id="superAdminModule" hidden>
-      <h3>Super admin · Manage admin access</h3>
-      <p>Only approved super admins can add or remove admin mobile numbers.</p>
-      <form id="adminMobileForm" class="super-admin-form">
-        <label for="newAdminMobile">Admin mobile number</label>
-        <input id="newAdminMobile" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
-        <button type="submit">Add admin</button>
-      </form>
-      <p class="super-admin-status" id="superAdminStatus" aria-live="polite"></p>
-      <ul class="super-admin-list" id="adminMobileList"></ul>
-    </section>
-    <div class="admin-table-card">
-      <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by name or mobile number" aria-label="Search users by name or mobile number"><button class="admin-export" id="selectAllAdmin">Select All</button><button class="admin-export" id="clearAdminSelection">Clear Selection</button><button class="admin-export" id="exportAdminAll">Export Full Dashboard</button><button class="admin-export" id="exportAdminSelected">Export Selected Users</button></div></div>
-      <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Name</th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th><th>Dates</th></tr></thead><tbody id="adminRows"></tbody></table>
-      <div class="admin-empty" id="adminEmpty" style="display:none">No matching users found.</div>
-    </div>
+    <details class="super-admin-card" id="superAdminOverview" hidden>
+      <summary class="super-admin-summary">
+        <span class="super-admin-summary-copy">
+          <strong>Super admin · Application overview</strong>
+          <small>Total registered users and daily office-day activity</small>
+        </span>
+        <span class="super-admin-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <div class="super-admin-overview-content">
+        <div class="super-admin-overview-toolbar">
+          <strong>Application usage</strong>
+          <label for="superAdminDateRange">Activity period
+            <select id="superAdminDateRange"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select>
+          </label>
+        </div>
+        <div class="super-admin-user-count">
+          <div class="super-admin-stat"><span>Total registered users</span><strong id="superAdminUserCount">0</strong></div>
+          <div class="super-admin-stat"><span>Active users in period</span><strong id="superAdminActiveUsers">0</strong></div>
+        </div>
+        <div class="super-admin-chart-grid">
+          <div class="super-admin-chart-card">
+            <h3>Office-day activity</h3>
+            <p>Users marking office days per date</p>
+            <svg class="super-admin-chart" id="superAdminActivityChart" viewBox="0 0 800 260" role="img" aria-label="Daily office-day activity chart"></svg>
+          </div>
+          <div class="super-admin-chart-card registration-chart">
+            <h3>New registrations</h3>
+            <p>Profiles created per date</p>
+            <svg class="super-admin-chart" id="superAdminRegistrationChart" viewBox="0 0 800 260" role="img" aria-label="New user registrations per date chart"></svg>
+          </div>
+        </div>
+        <section class="super-admin-health" aria-labelledby="superAdminHealthTitle">
+          <h3 id="superAdminHealthTitle">User and data health</h3>
+          <div class="super-admin-health-grid">
+            <div class="super-admin-health-item"><span>Profiles missing a name</span><strong id="superAdminMissingNames">0</strong></div>
+            <div class="super-admin-health-item"><span>Users with no office days</span><strong id="superAdminNoActivity">0</strong></div>
+            <div class="super-admin-health-item"><span>Duplicate mobile numbers</span><strong id="superAdminDuplicateMobiles">0</strong></div>
+          </div>
+        </section>
+        <section class="super-admin-audit" aria-labelledby="superAdminAuditTitle">
+          <h3 id="superAdminAuditTitle">Admin access audit history</h3>
+          <ul class="super-admin-audit-list" id="superAdminAuditList"><li>Loading audit history…</li></ul>
+        </section>
+      </div>
+    </details>
+    <details class="super-admin-card" id="superAdminModule" hidden>
+      <summary class="super-admin-summary">
+        <span class="super-admin-summary-copy">
+          <strong>Super admin · Manage admin access</strong>
+          <small>Manage approved admin and super-admin mobile numbers</small>
+        </span>
+        <span class="super-admin-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <div class="super-admin-content">
+        <p>Only approved super admins can add or remove admin mobile numbers.</p>
+        <form id="adminMobileForm" class="super-admin-form">
+          <label for="newAdminMobile">Admin mobile number
+            <input id="newAdminMobile" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
+          </label>
+          <button type="submit">Add admin</button>
+        </form>
+        <p class="super-admin-status" id="superAdminStatus" aria-live="polite"></p>
+        <ul class="super-admin-list" id="adminMobileList"></ul>
+        <div class="super-admin-divider"></div>
+        <p>Super-admin access (the final super admin cannot be removed).</p>
+        <form id="superAdminMobileForm" class="super-admin-form">
+          <label for="newSuperAdminMobile">Super-admin mobile number
+            <input id="newSuperAdminMobile" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
+          </label>
+          <button type="submit">Add super admin</button>
+        </form>
+        <p class="super-admin-status" id="superAdminAccessStatus" aria-live="polite"></p>
+        <ul class="super-admin-list" id="superAdminMobileList"></ul>
+      </div>
+    </details>
+    <details class="super-admin-card admin-dashboard-module" id="adminDashboardModule" hidden>
+      <summary class="super-admin-summary">
+        <span class="super-admin-summary-copy">
+          <strong>Admin dashboard · User activity</strong>
+          <small>Expand to view and export user activity</small>
+        </span>
+        <span class="super-admin-chevron" aria-hidden="true">⌄</span>
+      </summary>
+      <div class="admin-dashboard-content">
+        <div class="admin-table-card">
+          <div class="admin-table-header"><h3 id="adminActivityTitle">Current-year user activity</h3><div class="admin-export-actions"><select class="admin-search" id="adminYear" aria-label="Select dashboard year"></select><input class="admin-search" id="adminSearch" type="search" placeholder="Search by name or mobile number" aria-label="Search users by name or mobile number"><button class="admin-export" id="selectAllAdmin">Select All</button><button class="admin-export" id="clearAdminSelection">Clear Selection</button><button class="admin-export" id="exportAdminAll">Export Full Dashboard</button><button class="admin-export" id="exportAdminSelected">Export Selected Users</button></div></div>
+          <table class="admin-table"><thead><tr><th class="admin-select-cell" aria-label="Select users"></th><th>Name</th><th>Mobile number</th><th>Days in selected year</th><th>Q1 target / marked</th><th>Q2 target / marked</th><th>Q3 target / marked</th><th>Q4 target / marked</th><th>Last updated</th><th>Dates</th></tr></thead><tbody id="adminRows"></tbody></table>
+          <div class="admin-empty" id="adminEmpty" style="display:none">No matching users found.</div>
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -639,7 +801,7 @@ html,body{overflow-x:hidden}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.10.06.02</div>
+<div class="build-watermark">Build v26.10.10</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -649,6 +811,7 @@ const db=firebase.firestore();
 const trackerCollection="officedaystracker";
 let adminMobiles=[];
 let superAdminMobiles=[];
+let adminNamesByMobile={};
 let adminRows=[];
 let adminYear=new Date().getFullYear();
 let authMode="login";
@@ -834,8 +997,76 @@ function renderAdminMobileList(){
   const list=$("adminMobileList");
   if(!isSuperAdmin(auth.currentUser))return;
   list.innerHTML=adminMobiles.length
-    ? adminMobiles.map(mobile=>`<li>${escapeHtml(mobile)}<button type="button" class="admin-remove-button" data-remove-admin="${escapeHtml(mobile)}" aria-label="Remove admin ${escapeHtml(mobile)}">Remove</button></li>`).join("")
+    ? adminMobiles.map(mobile=>{
+      const name=adminNamesByMobile[mobile];
+      const displayName=name||"User not Registered";
+      return `<li><span class="super-admin-admin-identity"><strong>${escapeHtml(displayName)}</strong><small>${escapeHtml(mobile)}</small></span><button type="button" class="admin-remove-button" data-remove-admin="${escapeHtml(mobile)}" aria-label="Remove admin ${escapeHtml(mobile)}">Remove</button></li>`;
+    }).join("")
     : "<li>No admins configured.</li>";
+}
+
+function renderSuperAdminMobileList(){
+  const list=$("superAdminMobileList");
+  if(!list||!isSuperAdmin(auth.currentUser))return;
+  list.innerHTML=superAdminMobiles.length
+    ? superAdminMobiles.map(mobile=>{
+      const displayName=adminNamesByMobile[mobile]||"User not Registered";
+      const isCurrentUser=mobile===(auth.currentUser.email||"").split("@")[0];
+      const removeDisabled=superAdminMobiles.length<=1||isCurrentUser;
+      const disabledTitle=superAdminMobiles.length<=1?"At least one super admin must remain":"Ask another super admin to remove your access";
+      return `<li><span class="super-admin-admin-identity"><strong>${escapeHtml(displayName)}</strong><small>${escapeHtml(mobile)}</small></span><button type="button" class="admin-remove-button" data-remove-super-admin="${escapeHtml(mobile)}" aria-label="Remove super admin ${escapeHtml(mobile)}" ${removeDisabled?`disabled title="${disabledTitle}"`:""}>Remove</button></li>`;
+    }).join("")
+    : "<li>No super admins configured.</li>";
+}
+
+async function saveSuperAdminMobileList(nextMobiles){
+  if(!isSuperAdmin(auth.currentUser))throw new Error("Only super admins can manage super-admin access.");
+  const uniqueMobiles=[...new Set(nextMobiles.map(String).filter(mobile=>/^\d{10}$/.test(mobile)))];
+  if(!uniqueMobiles.length)throw new Error("At least one super admin must remain.");
+  await db.collection("appConfig").doc("superAdmin").set({
+    mobiles:uniqueMobiles,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+  superAdminMobiles=uniqueMobiles;
+  renderSuperAdminMobileList();
+}
+
+async function recordAdminAudit(action,mobile){
+  if(!auth.currentUser)return;
+  const actorMobile=(auth.currentUser.email||"").split("@")[0];
+  await db.collection("adminAudit").add({
+    action,
+    targetMobile:mobile,
+    actorMobile,
+    actorName:adminNamesByMobile[actorMobile]||currentUserName||"",
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function loadSuperAdminAudit(){
+  const list=$("superAdminAuditList");
+  if(!list||!isSuperAdmin(auth.currentUser))return;
+  try{
+    const snapshot=await db.collection("adminAudit").orderBy("createdAt","desc").limit(20).get();
+    list.innerHTML=snapshot.empty?"<li>No admin access changes recorded yet.</li>":snapshot.docs.map(doc=>{
+      const entry=doc.data()||{};
+      const action=entry.action==="remove-super-admin"?"Removed super admin":entry.action==="add-super-admin"?"Added super admin":entry.action==="remove-admin"?"Removed admin":"Added admin";
+      const actor=entry.actorName||entry.actorMobile||"Unknown admin";
+      return `<li><span><strong>${escapeHtml(action)}</strong> · ${escapeHtml(entry.targetMobile||"Unknown number")}<br>By ${escapeHtml(actor)} (${escapeHtml(entry.actorMobile||"—")})</span><time>${escapeHtml(formatAdminDate(entry.createdAt))}</time></li>`;
+    }).join("");
+  }catch(error){
+    console.error("Unable to load admin audit history:",error);
+    list.innerHTML="<li>Audit history unavailable. Check Firestore permissions.</li>";
+  }
+}
+
+async function loadAdminNames(){
+  const snapshot=await db.collection(trackerCollection).get();
+  adminNamesByMobile={};
+  snapshot.docs.forEach(doc=>{
+    const profile=doc.data()||{};
+    if(profile.mobile)adminNamesByMobile[String(profile.mobile)]=String(profile.name||"").trim();
+  });
 }
 
 async function saveAdminMobileList(nextMobiles){
@@ -960,7 +1191,8 @@ async function loadAdminDashboard(){
     const savedTargets=saved.quarterTargets&&typeof saved.quarterTargets==="object"?saved.quarterTargets:{};
     const legacyTarget=Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0?saved.quarterTarget:24;
     const targets=[1,2,3,4].map(q=>Number.isInteger(savedTargets[`${adminYear}-Q${q}`])&&savedTargets[`${adminYear}-Q${q}`]>0?savedTargets[`${adminYear}-Q${q}`]:legacyTarget);
-    const dates=Object.keys(savedData).filter(date=>savedData[date]&&date.startsWith(`${adminYear}-`)).sort();
+    const allDates=Object.keys(savedData).filter(date=>savedData[date]&&/^\d{4}-\d{2}-\d{2}$/.test(date)).sort();
+    const dates=allDates.filter(date=>date.startsWith(`${adminYear}-`));
     const quarterDates=[1,2,3,4].map(quarterNumber=>{
       const [start,end]=quarterRange(adminYear,quarterNumber);
       return dates.filter(date=>{
@@ -969,12 +1201,82 @@ async function loadAdminDashboard(){
       });
     });
     const yearDays=dates.length;
-    return {name:saved.name||"",mobile:saved.mobile||"Unknown",yearDays,days:Object.keys(savedData).filter(key=>savedData[key]).length,dates,quarterDates,targets,quarters:quarterDates.map(datesInQuarter=>datesInQuarter.length),updatedAt:saved.updatedAt};
+    return {name:saved.name||"",mobile:saved.mobile||"Unknown",yearDays,days:allDates.length,dates,allDates,createdAt:saved.createdAt,quarterDates,targets,quarters:quarterDates.map(datesInQuarter=>datesInQuarter.length),updatedAt:saved.updatedAt};
   }).sort((a,b)=>a.mobile.localeCompare(b.mobile));
+  renderSuperAdminOverview();
   renderAdminRows();
   if(selectedAdminDateMobile){
     renderAdminDateDetails(adminRows.find(row=>row.mobile===selectedAdminDateMobile));
   }
+}
+
+function renderSuperAdminOverview(){
+  if(!isSuperAdmin(auth.currentUser))return;
+  const periodDays=Number($("superAdminDateRange").value)||30;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const startDate=new Date(today);
+  startDate.setDate(startDate.getDate()-periodDays+1);
+  const dates=Array.from({length:periodDays},(_,index)=>{
+    const date=new Date(startDate);
+    date.setDate(startDate.getDate()+index);
+    return key(date);
+  });
+  const activityCounts=Array(periodDays).fill(0);
+  const registrationCounts=Array(periodDays).fill(0);
+  let activeUsers=0;
+  const mobileCounts={};
+  let missingNames=0,noActivity=0;
+  adminRows.forEach(row=>{
+    const officeDays=row.allDates||[];
+    const periodDaysForUser=officeDays.filter(date=>date>=dates[0]&&date<=dates[dates.length-1]);
+    if(periodDaysForUser.length)activeUsers++;
+    if(!String(row.name||"").trim())missingNames++;
+    if(!officeDays.length)noActivity++;
+    if(row.mobile&&row.mobile!=="Unknown")mobileCounts[row.mobile]=(mobileCounts[row.mobile]||0)+1;
+    periodDaysForUser.forEach(date=>activityCounts[dates.indexOf(date)]++);
+    const createdAt=row.createdAt&&(row.createdAt.toDate?row.createdAt.toDate():new Date(row.createdAt));
+    if(createdAt&&!isNaN(createdAt)){
+      const createdKey=key(createdAt);
+      const index=dates.indexOf(createdKey);
+      if(index>=0)registrationCounts[index]++;
+    }
+  });
+  const duplicateMobiles=Object.values(mobileCounts).filter(count=>count>1).length;
+  $("superAdminUserCount").textContent=adminRows.length;
+  $("superAdminActiveUsers").textContent=activeUsers;
+  $("superAdminMissingNames").textContent=missingNames;
+  $("superAdminNoActivity").textContent=noActivity;
+  $("superAdminDuplicateMobiles").textContent=duplicateMobiles;
+  renderSuperAdminChart("superAdminActivityChart",activityCounts,dates,"#8b5cf6","adminChartFill");
+  renderSuperAdminChart("superAdminRegistrationChart",registrationCounts,dates,"#0891b2","registrationChartFill");
+}
+
+function renderSuperAdminChart(elementId,counts,dates,color,gradientId){
+  const width=800,height=260,left=48,right=16,top=20,bottom=218;
+  const plotWidth=width-left-right,plotHeight=bottom-top;
+  const tickMax=Math.max(1,Math.ceil(Math.max(0,...counts)/4)*4);
+  const points=counts.map((count,index)=>{
+    const x=left+(counts.length<2?0:index/(counts.length-1))*plotWidth;
+    const y=bottom-(count/tickMax)*plotHeight;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const linePath=points.map((point,index)=>`${index?"L":"M"}${point}`).join(" ");
+  const areaPath=`M${left},${bottom} ${linePath} L${width-right},${bottom} Z`;
+  const grid=[];
+  for(let tick=0;tick<=4;tick++){
+    const value=Math.round(tickMax*tick/4);
+    const y=bottom-(value/tickMax)*plotHeight;
+    grid.push(`<line class="chart-grid" x1="${left}" y1="${y}" x2="${width-right}" y2="${y}"/><text x="${left-10}" y="${y+4}" text-anchor="end">${value}</text>`);
+  }
+  const labelCount=Math.min(5,dates.length);
+  const labels=Array.from({length:labelCount},(_,index)=>{
+    const dateIndex=Math.round(index*(dates.length-1)/Math.max(1,labelCount-1));
+    const date=new Date(`${dates[dateIndex]}T00:00:00`);
+    const x=left+(dateIndex/Math.max(1,dates.length-1))*plotWidth;
+    return `<text x="${x}" y="${height-8}" text-anchor="middle">${date.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`;
+  }).join("");
+  $(elementId).innerHTML=`<defs><linearGradient id="${gradientId}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity=".32"/><stop offset="100%" stop-color="${color}" stop-opacity=".02"/></linearGradient></defs>${grid.join("")}<path class="chart-area" d="${areaPath}"/><path class="chart-line" d="${linePath}"/>${labels}`;
 }
 
 function populateAdminYears(){
@@ -1285,6 +1587,13 @@ $("adminMobileForm").onsubmit=async event=>{
     await saveAdminMobileList([...adminMobiles,mobile]);
     $("newAdminMobile").value="";
     status.textContent="Admin access updated.";
+    try{
+      await recordAdminAudit("add-admin",mobile);
+      await loadSuperAdminAudit();
+    }catch(auditError){
+      console.error("Unable to record admin audit event:",auditError);
+      status.textContent="Admin access updated, but the audit entry could not be saved.";
+    }
   }catch(error){
     console.error("Unable to add admin:",error);
     status.textContent="Could not update admins. Check Firestore permissions.";
@@ -1293,15 +1602,78 @@ $("adminMobileForm").onsubmit=async event=>{
 $("adminMobileList").onclick=async event=>{
   const button=event.target.closest("[data-remove-admin]");
   if(!button||!isSuperAdmin(auth.currentUser))return;
+  const mobile=button.dataset.removeAdmin;
+  if(!window.confirm(`Remove admin access for ${mobile}?`))return;
   try{
-    await saveAdminMobileList(adminMobiles.filter(mobile=>mobile!==button.dataset.removeAdmin));
+    await saveAdminMobileList(adminMobiles.filter(item=>item!==mobile));
     $("superAdminStatus").textContent="Admin access updated.";
+    try{
+      await recordAdminAudit("remove-admin",mobile);
+      await loadSuperAdminAudit();
+    }catch(auditError){
+      console.error("Unable to record admin audit event:",auditError);
+      $("superAdminStatus").textContent="Admin access updated, but the audit entry could not be saved.";
+    }
   }catch(error){
     console.error("Unable to remove admin:",error);
     $("superAdminStatus").textContent="Could not update admins. Check Firestore permissions.";
   }
 };
+$("superAdminMobileForm").onsubmit=async event=>{
+  event.preventDefault();
+  if(!isSuperAdmin(auth.currentUser))return;
+  const mobile=$("newSuperAdminMobile").value.trim();
+  const status=$("superAdminAccessStatus");
+  if(!/^\d{10}$/.test(mobile)){
+    status.textContent="Enter a valid 10-digit mobile number.";
+    return;
+  }
+  try{
+    await saveSuperAdminMobileList([...superAdminMobiles,mobile]);
+    $("newSuperAdminMobile").value="";
+    status.textContent="Super-admin access updated.";
+    try{
+      await recordAdminAudit("add-super-admin",mobile);
+      await loadSuperAdminAudit();
+    }catch(auditError){
+      console.error("Unable to record super-admin audit event:",auditError);
+      status.textContent="Access updated, but the audit entry could not be saved.";
+    }
+  }catch(error){
+    console.error("Unable to add super admin:",error);
+    status.textContent="Could not update super admins. Check Firestore permissions.";
+  }
+};
+$("superAdminMobileList").onclick=async event=>{
+  const button=event.target.closest("[data-remove-super-admin]");
+  if(!button||!isSuperAdmin(auth.currentUser))return;
+  const mobile=button.dataset.removeSuperAdmin;
+  if(superAdminMobiles.length<=1){
+    $("superAdminAccessStatus").textContent="The last super admin cannot be removed.";
+    return;
+  }
+  if(mobile===(auth.currentUser.email||"").split("@")[0]){
+    $("superAdminAccessStatus").textContent="Ask another super admin to remove your access.";
+    return;
+  }
+  if(!window.confirm(`Remove super-admin access for ${mobile}?`))return;
+  try{
+    await saveSuperAdminMobileList(superAdminMobiles.filter(item=>item!==mobile));
+    $("superAdminAccessStatus").textContent="Super-admin access updated.";
+    try{
+      await recordAdminAudit("remove-super-admin",mobile);
+      await loadSuperAdminAudit();
+    }catch(auditError){
+      console.error("Unable to record super-admin audit event:",auditError);
+      $("superAdminAccessStatus").textContent="Access updated, but the audit entry could not be saved.";
+    }
+  }catch(error){
+    console.error("Unable to remove super admin:",error);
+    $("superAdminAccessStatus").textContent="Could not update super admins. Check Firestore permissions.";
+  }
+};
 $("adminSearch").oninput=renderAdminRows;
+$("superAdminDateRange").onchange=renderSuperAdminOverview;
 $("adminYear").onchange=()=>{
   adminYear=Number($("adminYear").value);
   loadAdminDashboard().catch(error=>{
@@ -1318,7 +1690,12 @@ auth.onAuthStateChanged(async user=>{
   $("authScreen").style.display=user?"none":"flex";
   $("appContent").style.display=user?"block":"none";
   $("adminButton").classList.remove("visible");
+  $("superAdminOverview").hidden=true;
+  $("superAdminOverview").open=false;
   $("superAdminModule").hidden=true;
+  $("adminDashboardModule").hidden=true;
+  $("adminDashboardModule").open=false;
+  $("adminDashboardModule").classList.remove("regular-admin");
   adminMobiles=[];
   superAdminMobiles=[];
   if(!user){
@@ -1333,10 +1710,27 @@ auth.onAuthStateChanged(async user=>{
   }
   await loadSuperAdminConfig();
   await loadAdminConfig();
-  if(isAdmin(user))$("adminButton").classList.add("visible");
-  if(isSuperAdmin(user)){
+  const userIsSuperAdmin=isSuperAdmin(user);
+  if(userIsSuperAdmin){
+    try{
+      await loadAdminNames();
+    }catch(error){
+      adminNamesByMobile={};
+      console.error("Unable to load admin user names:",error);
+    }
+  }
+  if(isAdmin(user)){
+    $("adminButton").classList.add("visible");
+    $("adminDashboardModule").hidden=false;
+    $("adminDashboardModule").open=!userIsSuperAdmin;
+    $("adminDashboardModule").classList.toggle("regular-admin",!userIsSuperAdmin);
+  }
+  if(userIsSuperAdmin){
+    $("superAdminOverview").hidden=false;
     $("superAdminModule").hidden=false;
     renderAdminMobileList();
+    renderSuperAdminMobileList();
+    loadSuperAdminAudit();
   }
   const profileSnapshot=await db.collection(trackerCollection).doc(user.uid).get();
   currentUserName=profileSnapshot.exists?profileSnapshot.data().name||"":"";

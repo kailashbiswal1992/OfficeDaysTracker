@@ -536,6 +536,146 @@ body.dark-mode .super-admin-user-count{background:none}
   .super-admin-user-count{grid-template-columns:1fr}
   .super-admin-audit-list li{flex-direction:column;gap:4px}
 }
+
+/* Modern tech-inspired styling for the signed-in tracker. */
+.app{max-width:1180px;padding:28px}
+.app .header,.app .calendar,.app .card{
+  border:1px solid rgba(148,163,184,.22);
+  box-shadow:0 18px 48px rgba(2,8,23,.14),0 2px 8px rgba(2,8,23,.06);
+}
+.app .header{
+  min-height:112px;
+  border-radius:20px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);
+}
+body.dark-mode .app .header,body.dark-mode .app .calendar,body.dark-mode .app .card{
+  border-color:rgba(148,163,184,.16);
+  box-shadow:0 18px 48px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.12);
+}
+body.dark-mode .app .header,body.dark-mode .app .calendar{background:rgba(26,35,50,.96)}
+.app .title-group h1{
+  background:linear-gradient(100deg,#0f172a 10%,#075985 55%,#4f46e5 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+body.dark-mode .app .title-group h1{
+  background:linear-gradient(100deg,#e0e7ff 10%,#7dd3fc 55%,#c4b5fd 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.app .controls button,.app .controls select{
+  border-color:#dbe4f0;
+  border-radius:11px;
+  box-shadow:0 2px 5px rgba(15,23,42,.04);
+}
+.app .controls button:hover,.app .controls select:hover{transform:translateY(-1px)}
+.app .summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:0 0 22px}
+.app .card{
+  min-width:0;
+  min-height:150px;
+  padding:20px;
+  overflow:hidden;
+  border-left:0;
+  border-top:3px solid #0284c7;
+  border-radius:18px;
+  background:linear-gradient(145deg,#fff 0%,#f8fbff 100%);
+}
+.app .card:nth-child(2){border-top-color:#10b981}
+.app .card:nth-child(3){border-top-color:#f59e0b}
+.app .card:nth-child(4){border-top-color:#8b5cf6}
+body.dark-mode .app .card{background:linear-gradient(145deg,#1a2332 0%,#202c3d 100%)}
+.app .card:hover{transform:translateY(-3px);box-shadow:0 20px 42px rgba(2,8,23,.18)}
+.app .label{letter-spacing:.8px}
+.app .value{font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.app .calendar{padding:24px;border-radius:20px;background:rgba(255,255,255,.98)}
+body.dark-mode .app .calendar{background:rgba(26,35,50,.98)}
+.app .monthhead{margin-bottom:20px}
+.app .monthhead button,.app .view-toggle button{
+  border-color:#dbe4f0;
+  border-radius:11px;
+  box-shadow:0 2px 6px rgba(15,23,42,.05);
+}
+.app .monthhead button:hover{transform:translateY(-1px)}
+.app .monthhead strong{letter-spacing:-.4px}
+.app .view-toggle button.active{box-shadow:0 5px 14px rgba(0,102,204,.24)}
+.app .grid{gap:8px}
+.app .dow{font-size:11px;letter-spacing:1px}
+.app .day{
+  min-height:82px;
+  border:1px solid #dbe4f0;
+  border-radius:13px;
+  background:linear-gradient(145deg,#fff 0%,#f8fafc 100%);
+}
+body.dark-mode .app .day{border-color:#42516a;background:linear-gradient(145deg,#2d3748 0%,#253247 100%)}
+.app .day:hover,.app .day:focus-visible{transform:translateY(-2px);border-color:#38bdf8;box-shadow:0 8px 18px rgba(2,132,199,.14)}
+.app .day.office{background:linear-gradient(145deg,#ecfeff 0%,#dbeafe 100%);border-color:#38bdf8;box-shadow:inset 0 0 0 1px rgba(14,165,233,.14),0 5px 14px rgba(14,165,233,.12)}
+body.dark-mode .app .day.office{background:linear-gradient(145deg,#12394a 0%,#1b3150 100%);border-color:#38bdf8}
+.app .day.today{outline:2px solid #f59e0b;outline-offset:2px}
+.app .day .tag{border-radius:7px}
+.app .progress-bar{height:10px;border:1px solid rgba(148,163,184,.2)}
+.app .progress-fill{background:linear-gradient(90deg,#06b6d4,#2563eb 55%,#7c3aed)}
+.app .note{border-left-width:4px;border-radius:10px;background:linear-gradient(100deg,#eff6ff,#f8fafc)}
+body.dark-mode .app .note{background:linear-gradient(100deg,#26364d,#2d3748)}
+.app .actions button{border-radius:11px;letter-spacing:.35px}
+.app .actions button:focus-visible,.app .controls button:focus-visible,.app .controls select:focus-visible,.app .monthhead button:focus-visible,.app .view-toggle button:focus-visible{
+  outline:3px solid rgba(56,189,248,.5);
+  outline-offset:2px;
+}
+@media(max-width:768px){
+  .app{padding:16px}
+  .app .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .app .calendar{padding:16px}
+  .app .grid{gap:5px}
+  .app .day{min-height:70px}
+}
+@media(max-width:600px){
+  .app{padding:12px}
+  .app .header{border-radius:16px}
+  .app .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .app .card{min-height:130px;padding:12px;border-radius:14px}
+  .app .calendar{border-radius:16px}
+  .app .grid{gap:4px}
+  .app .day{min-height:60px;border-radius:9px}
+}
+@media(max-width:400px){
+  .app{padding:8px}
+  .app .summary{grid-template-columns:1fr}
+  .app .card{min-height:120px;padding:10px}
+  .app .calendar{padding:10px}
+  .app .grid{gap:3px}
+  .app .day{min-height:55px}
+}
+
+/* Elegant royal-blue palette */
+:root{--royal:#2346a8;--royal-deep:#172e70;--royal-bright:#3565d4;--royal-soft:#edf2ff;--royal-line:#d8e2fb}
+body{background:linear-gradient(135deg,#101b3b 0%,#1e3470 52%,#263f83 100%)}
+body.dark-mode{background:linear-gradient(135deg,#080f25 0%,#111d42 55%,#172858 100%)}
+.app .header,.app .calendar{border-color:rgba(117,148,218,.24);box-shadow:0 20px 55px rgba(8,22,61,.2),0 3px 10px rgba(8,22,61,.08)}
+.app .header{background:linear-gradient(120deg,rgba(255,255,255,.99),rgba(244,247,255,.98))}
+.app .title-group h1{background:linear-gradient(100deg,#142858 8%,#2346a8 58%,#5479d5 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.app .welcome-message,.app .edit-name-button,.app .value.highlight{color:var(--royal)}
+.app .controls button,.app .controls select,.app .monthhead button,.app .view-toggle button{border-color:var(--royal-line)}
+.app .controls button:hover,.app .controls select:hover,.app .monthhead button:hover{border-color:#7896df;background:#f2f5ff}
+.app .view-toggle button.active{background:linear-gradient(135deg,var(--royal),var(--royal-bright));border-color:var(--royal);box-shadow:0 5px 14px rgba(35,70,168,.25)}
+.app .card{border-top-color:var(--royal);background:linear-gradient(145deg,#fff 0%,#f6f8ff 100%)}
+.app .card:nth-child(2){border-top-color:#3e8a78}.app .card:nth-child(3){border-top-color:#c49336}.app .card:nth-child(4){border-top-color:#6b63b5}
+.app .progress-fill{background:linear-gradient(90deg,#3565d4,#2346a8 65%,#172e70)}
+.app .progress-text,.app .month-item .month-num{color:var(--royal)}
+.app .day{border-color:#dce4f4;background:linear-gradient(145deg,#fff 0%,#f7f9ff 100%)}
+.app .day:hover,.app .day:focus-visible{border-color:#6c8ce0;box-shadow:0 8px 18px rgba(35,70,168,.16)}
+.app .day.office{background:linear-gradient(145deg,#f0f4ff 0%,#dfe8ff 100%);border-color:#6c8ce0;box-shadow:inset 0 0 0 1px rgba(35,70,168,.12),0 5px 14px rgba(35,70,168,.12)}
+.app .day .tag{color:var(--royal);background:#dfe8ff}
+.app .note{border-left-color:var(--royal);background:linear-gradient(100deg,#edf2ff,#f8faff)}
+.app .actions button:nth-child(2){background:linear-gradient(135deg,#3565d4,#2346a8)}
+.app .actions button:nth-child(2):hover{background:linear-gradient(135deg,#2c55ba,#172e70)}
+body.dark-mode .app .header,body.dark-mode .app .calendar{background:linear-gradient(145deg,#172442 0%,#1b2b50 100%)}
+body.dark-mode .app .card{background:linear-gradient(145deg,#172442 0%,#1d2d50 100%)}
+body.dark-mode .app .day.office{background:linear-gradient(145deg,#1c315d 0%,#243d73 100%);border-color:#7797eb}
+body.dark-mode .app .day .tag{color:#b6c9ff;background:rgba(112,145,224,.2)}
+body.dark-mode .app .note{background:linear-gradient(100deg,#1b2b50,#202f50);border-left-color:#7898ed}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -801,7 +941,7 @@ body.dark-mode .super-admin-user-count{background:none}
 
 <input type="file" id="fileInput" accept=".json">
 <div class="toast" id="toast" role="status"></div>
-<div class="build-watermark">Build v26.10.10</div>
+<div class="build-watermark">Build v26.10.25</div>
 
 <script>
 firebase.initializeApp(firebaseConfig);
@@ -951,7 +1091,7 @@ async function ensureTrackerProfile(user,mobile,name=""){
   const profileRef=db.collection(trackerCollection).doc(user.uid);
   const snapshot=await profileRef.get();
   if(!snapshot.exists){
-    await profileRef.set({
+    const profile={
       uid:user.uid,
       name,
       mobile,
@@ -960,14 +1100,17 @@ async function ensureTrackerProfile(user,mobile,name=""){
       quarterTarget:24,
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }else if(!snapshot.data().mobile||name&&snapshot.data().name!==name){
-    await profileRef.set({
-      uid:user.uid,
-      ...(name?{name}:{}),
-      mobile
-    },{merge:true});
+    };
+    await profileRef.set(profile);
+    return profile;
   }
+  const profile=snapshot.data()||{};
+  if(!profile.mobile||name&&profile.name!==name){
+    const updates={...(name?{name}:{}),mobile};
+    await profileRef.set(updates,{merge:true});
+    return {...profile,...updates};
+  }
+  return profile;
 }
 
 function isSuperAdmin(user){
@@ -1703,13 +1846,14 @@ auth.onAuthStateChanged(async user=>{
     return;
   }
   const signedInMobile=(user.email||"").split("@")[0];
-  try{
-    await ensureTrackerProfile(user,signedInMobile);
-  }catch(error){
-    console.error("Unable to ensure tracker profile:",error);
-  }
-  await loadSuperAdminConfig();
-  await loadAdminConfig();
+  let profileData=null;
+  await Promise.all([
+    ensureTrackerProfile(user,signedInMobile).then(profile=>{profileData=profile||{};}).catch(error=>{
+      console.error("Unable to ensure tracker profile:",error);
+    }),
+    loadSuperAdminConfig(),
+    loadAdminConfig()
+  ]);
   const userIsSuperAdmin=isSuperAdmin(user);
   if(userIsSuperAdmin){
     try{
@@ -1732,8 +1876,7 @@ auth.onAuthStateChanged(async user=>{
     renderSuperAdminMobileList();
     loadSuperAdminAudit();
   }
-  const profileSnapshot=await db.collection(trackerCollection).doc(user.uid).get();
-  currentUserName=profileSnapshot.exists?profileSnapshot.data().name||"":"";
+  currentUserName=profileData?.name||"";
   $("welcomeMessage").textContent=`Welcome${currentUserName?`, ${currentUserName}`:""}!`;
   const hasPendingSync=localStorage.getItem(KEY_PENDING_SYNC)==="true";
   if(!hasPendingSync){
@@ -1741,9 +1884,12 @@ auth.onAuthStateChanged(async user=>{
           quarterTargets={};
   }
   try{
-    const snapshot=await db.collection(trackerCollection).doc(user.uid).get();
-    if(snapshot.exists&&!hasPendingSync){
-      const saved=snapshot.data();
+    if(!profileData){
+      const snapshot=await db.collection(trackerCollection).doc(user.uid).get();
+      if(snapshot.exists)profileData=snapshot.data()||{};
+    }
+    if(profileData&&!hasPendingSync){
+      const saved=profileData;
       if(saved.data&&typeof saved.data==="object")data=saved.data;
       if(saved.quarterTargets&&typeof saved.quarterTargets==="object")quarterTargets=saved.quarterTargets;
       else if(Number.isInteger(saved.quarterTarget)&&saved.quarterTarget>0)quarterTargets={};
